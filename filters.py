@@ -1,13 +1,11 @@
 #an algorithm for applying low-pass and SD-rom filters
-import numpy as np, scipy as sp, librosa
-from scipy.signal import lfilter, butter, freqz
+import numpy as np, scipy as sp, librosa, sys
 from pysndfx import AudioEffectsChain
 from pathlib import Path
 
 #Constants for SD-rom
 WINDOW_SIZE = 5
 THRESHOLD_1, THRESHOLD_2 = 4, 12
-#THRESHOLD_1, THRESHOLD_2, THRESHOLD_3 = 6, 8, 14  ->  for a WINDOW_SIZE of 7
 
 #pass in a window of size n with the center sample under inspection
 def SD_rom(window):
@@ -32,7 +30,7 @@ def SD_rom(window):
             rank_order_diff.append(sliding_window[i] - center_sample)
     
     #replace x(n) with ROM if impulse detected
-    if rank_order_diff[0] > THRESHOLD_1 or rank_order_diff[1] > THRESHOLD_2: #or rank_order_diff[2] > THRESHOLD_3:
+    if rank_order_diff[0] > THRESHOLD_1 or rank_order_diff[1] > THRESHOLD_2:
         window[center_index] = ROM
     return window
 
@@ -64,12 +62,24 @@ def wavwrite(filepath, data, sr, norm=True, dtype='int16'):
     data = data.astype(dtype)
     sp.io.wavfile.write(filepath, sr, data)
 
-if __name__ == "__main__":
-    pathlist = Path("test_audio").glob('**/*.wav')
-    for path in pathlist:
-        audio, sr = librosa.load(str(path), sr=None)
-        new_signal = filter_signal(audio, sr, 0.1)
+def perform_filtering(path):
+    audio, sr = librosa.load(str(path), sr=None)
+    new_signal = filter_signal(audio, sr, 0.1)
 
-        filename = str(path).split("/")[1].split(".")[0]
-        new_path = "test_audio_results/" + filename + "_reduced.wav"
-        wavwrite(new_path, new_signal, sr)
+    filename = str(path).split("/")[1].split(".")[0]
+    new_path = "test_audio_results/" + filename + "_reduced.wav"
+    wavwrite(new_path, new_signal, sr)
+
+if __name__ == "__main__":
+    if len(sys.argv) > 1:
+        for filename in sys.argv[1:]:
+            if filename[-4:] != ".wav":
+                filename += ".wav"
+            try:
+                perform_filtering("test_audio/" + filename)
+            except:
+                print(filename + " is not a valid file name.")
+    else:
+        pathlist = Path("test_audio").glob('**/*.wav')
+        for path in pathlist:
+            perform_filtering(path)
