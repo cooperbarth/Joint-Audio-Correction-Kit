@@ -37,19 +37,24 @@ def SD_rom(window):
     return window
 
 def lowpass(sig, sr, thresh):
+    #get the spectral centroid and find the low-pass threshold from it
     spec_cent = librosa.feature.spectral_centroid(y=sig, sr=sr)
     low_thresh = round(np.median(spec_cent)) * thresh
+
+    #create a low-pass audio filter and apply it
     rem_noise = AudioEffectsChain().highshelf(gain=-30.0, frequency=low_thresh, slope=0.8)
     return rem_noise(sig)
     
 def filter_signal(sig, sr, thresh):
     len_signal, win_start, win_end = len(sig), 0, WINDOW_SIZE
 
+    #apply SD_rom
     while win_end < len_signal:
         sig[win_start : win_end] = SD_rom(sig[win_start : win_end])
         win_start += 1
         win_end += 1
     
+    #apply lowpass
     return lowpass(sig, sr, thresh)
 
 def wavwrite(filepath, data, sr, norm=True, dtype='int16'):
