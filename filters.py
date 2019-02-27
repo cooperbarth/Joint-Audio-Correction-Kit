@@ -1,6 +1,7 @@
 #an algorithm for applying low-pass and SD-rom filters
 import numpy as np, scipy as sp, librosa
 from scipy.signal import lfilter, butter, freqz
+from pysndfx import AudioEffectsChain
 
 #Constants for SD-rom
 WINDOW_SIZE = 5
@@ -35,13 +36,13 @@ def SD_rom(window):
         
     return window
 
-def lowpass(sig, sr, cutoff, order=5):
-    nyquist_freq = sr / 2
-    normalized_cutoff = cutoff / nyquist_freq
-    b, a = butter(order, normalized_cutoff, btype='low', analog=False)
-    return lfilter(b, a, sig)
+def lowpass(sig, sr, thresh):
+    spec_cent = librosa.feature.spectral_centroid(y=sig, sr=sr)
+    low_thresh = round(np.median(spec_cent)) * thresh
+    rem_noise = AudioEffectsChain().highshelf(gain=-30.0, frequency=low_thresh, slope=0.8)
+    return rem_noise(sig)
     
-def filter_signal(sig, sr, cutoff_Hz):
+def filter_signal(sig, sr, thresh):
     len_signal, win_start, win_end = len(sig), 0, WINDOW_SIZE
 
     while win_end < len_signal:
@@ -49,10 +50,7 @@ def filter_signal(sig, sr, cutoff_Hz):
         win_start += 1
         win_end += 1
     
-    sig = np.fft.fft(sig)
-    sig = lowpass(sig, sr, cutoff_Hz)
-
-    return np.abs(np.fft.ifft(sig))
+    return lowpass(sig, sr, thresh)
 
 def wavwrite(filepath, data, sr, norm=True, dtype='int16'):
     if norm:
@@ -61,7 +59,6 @@ def wavwrite(filepath, data, sr, norm=True, dtype='int16'):
     data = data.astype(dtype)
     sp.io.wavfile.write(filepath, sr, data)
 
-audio, sr = librosa.load("trumpet_natural_reverb.wav", sr=None)
-new_signal = filter_signal(audio, sr, 33)
+audio, sr = librosa.load("trumpet.wav", sr=None)
+new_signal = filter_signal(audio, sr, 0.1)
 wavwrite("noise_reduced.wav", new_signal, sr)
-print(audio, new_signal)
