@@ -3,9 +3,10 @@ import numpy as np, scipy as sp, librosa, sys
 from pysndfx import AudioEffectsChain
 from pathlib import Path
 
-#Constants for SD-rom
+#Constants
 WINDOW_SIZE = 5
 THRESHOLD_1, THRESHOLD_2 = 4, 12
+GAIN, SLOPE = -30.0, 0.8
 
 #pass in a window of size n with the center sample under inspection
 def SD_rom(window):
@@ -40,7 +41,7 @@ def lowpass(sig, sr, thresh):
     low_thresh = round(np.median(spec_cent)) * thresh
 
     #create a low-pass audio filter and apply it
-    rem_noise = AudioEffectsChain().highshelf(gain=-30.0, frequency=low_thresh, slope=0.8)
+    rem_noise = AudioEffectsChain().highshelf(gain=GAIN, frequency=low_thresh, slope=SLOPE)
     return rem_noise(sig)
     
 def filter_signal(sig, sr, thresh):
