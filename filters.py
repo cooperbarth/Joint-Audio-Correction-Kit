@@ -2,6 +2,7 @@
 import numpy as np, scipy as sp, librosa
 from scipy.signal import lfilter, butter, freqz
 from pysndfx import AudioEffectsChain
+from pathlib import Path
 
 #Constants for SD-rom
 WINDOW_SIZE = 5
@@ -33,7 +34,6 @@ def SD_rom(window):
     #replace x(n) with ROM if impulse detected
     if rank_order_diff[0] > THRESHOLD_1 or rank_order_diff[1] > THRESHOLD_2: #or rank_order_diff[2] > THRESHOLD_3:
         window[center_index] = ROM
-        
     return window
 
 def lowpass(sig, sr, thresh):
@@ -59,6 +59,12 @@ def wavwrite(filepath, data, sr, norm=True, dtype='int16'):
     data = data.astype(dtype)
     sp.io.wavfile.write(filepath, sr, data)
 
-audio, sr = librosa.load("trumpet.wav", sr=None)
-new_signal = filter_signal(audio, sr, 0.1)
-wavwrite("noise_reduced.wav", new_signal, sr)
+if __name__ == "__main__":
+    pathlist = Path("test_audio").glob('**/*.wav')
+    for path in pathlist:
+        audio, sr = librosa.load(str(path), sr=None)
+        new_signal = filter_signal(audio, sr, 0.1)
+
+        filename = str(path).split("/")[1].split(".")[0]
+        new_path = "test_audio_results/" + filename + "_reduced.wav"
+        wavwrite(new_path, new_signal, sr)
