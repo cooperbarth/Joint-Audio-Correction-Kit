@@ -3,8 +3,8 @@ import numpy as np, librosa as lib
 
 #Constants for SD-rom
 WINDOW_SIZE = 5
-THRESHOLD_1 = 4
-THRESHOLD_2 = 12
+THRESHOLD_1, THRESHOLD_2 = 4, 12
+#THRESHOLD_1, THRESHOLD_2, THRESHOLD_3 = 6, 8, 14  ->  for a WINDOW_SIZE of 7
 
 #pass in a window of size n with the center sample under inspection
 def SD_rom(window):
@@ -29,11 +29,16 @@ def SD_rom(window):
             rank_order_diff.append(sliding_window[i] - center_sample)
     
     #replace x(n) with ROM if impulse detected
-    if rank_order_diff[0] > THRESHOLD_1 or rank_order_diff[1] > THRESHOLD_2:
+    if rank_order_diff[0] > THRESHOLD_1 or rank_order_diff[1] > THRESHOLD_2: #or rank_order_diff[2] > THRESHOLD_3:
         window[center_index] = ROM
         
     return window
 
 
-def filter():
-    print("filter here!")
+def filter_signal(sig):
+    len_signal, win_start, win_end = len(sig), 0, WINDOW_SIZE - 1
+
+    while win_end < len_signal:
+        sig[win_start : win_end] = SD_rom(sig[win_start : win_end])
+    
+    return sig
