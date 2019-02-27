@@ -1,5 +1,6 @@
 #an algorithm for applying low-pass and SD-rom filters
-import numpy as np, librosa as lib
+import numpy as np, scipy as sp, librosa
+from scipy.signal import lfilter, butter, freqz
 
 #Constants for SD-rom
 WINDOW_SIZE = 5
@@ -14,7 +15,7 @@ def SD_rom(window):
 
     #organizing the sliding window i.e. the window without the center sample
     sliding_window = window.copy() #w(n)
-    del sliding_window[center_index]
+    sliding_window = np.concatenate((sliding_window[:center_index], sliding_window[(center_index + 1):]))
     sliding_window = sorted(sliding_window) #r(n)
 
     #calculating the rank-ordered mean
@@ -34,11 +35,33 @@ def SD_rom(window):
         
     return window
 
-
-def filter_signal(sig):
-    len_signal, win_start, win_end = len(sig), 0, WINDOW_SIZE - 1
+def lowpass(sig, sr, cutoff, order=5):
+    nyquist_freq = sr / 2
+    normalized_cutoff = cutoff / nyquist_freq
+    b, a = butter(order, normalized_cutoff, btype='low', analog=False)
+    return lfilter(b, a, sig)
+    
+def filter_signal(sig, sr, cutoff_Hz):
+    len_signal, win_start, win_end = len(sig), 0, WINDOW_SIZE
 
     while win_end < len_signal:
         sig[win_start : win_end] = SD_rom(sig[win_start : win_end])
+        win_start += 1
+        win_end += 1
     
-    return sig
+    sig = np.fft.fft(sig)
+    sig = lowpass(sig, sr, cutoff_Hz)
+
+    return np.abs(np.fft.ifft(sig))
+
+def wavwrite(filepath, data, sr, norm=True, dtype='int16'):
+    if norm:
+        data /= np.max(np.abs(data))
+    data = data * np.iinfo(dtype).max
+    data = data.astype(dtype)
+    sp.io.wavfile.write(filepath, sr, data)
+
+audio, sr = librosa.load("trumpet_natural_reverb.wav", sr=None)
+new_signal = filter_signal(audio, sr, 33)
+wavwrite("noise_reduced.wav", new_signal, sr)
+print(audio, new_signal)
