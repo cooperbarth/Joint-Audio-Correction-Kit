@@ -10,7 +10,7 @@ import config
 
 def file_to_waveform_image(file):
     print("file_to_waveform_image: started")
-    if file and is_allowed_file_type(file.filename):
+    if file and file.filename.endswith(".mp3"):
         filename = secure_filename(file.filename)
         path = join(config.API_TEMP_DIRECTORY, filename)
         print("file_to_waveform_image: saving file")
@@ -30,7 +30,3 @@ def file_to_waveform_image(file):
 
     print("file_to_waveform_image_form: bad file type")
     return "error"
-
-
-def is_allowed_file_type(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in set(['mp3', 'mp4'])
