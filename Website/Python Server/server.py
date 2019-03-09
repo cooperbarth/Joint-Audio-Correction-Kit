@@ -24,3 +24,18 @@ def file_to_waveform_image():
         print("file_to_waveform_image: no file")
         return "error"
     return waveforms.file_to_waveform_image(file)
+
+
+@app.route('/api/file_to_spectrogram_image', methods=['POST'])
+def file_to_spectrogram_image():
+    if not request.files:
+        return "error"
+    file = None
+    for key, file_storage in request.files.items():
+        if key == "audio_file":
+            file = file_storage
+
+    if not file:
+        print("file_to_spectrogram_image: no file")
+        return "error"
+    return waveforms.file_to_spectrogram_image(file)

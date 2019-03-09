@@ -3,14 +3,44 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
+  <link rel="stylesheet" href="index.css">
 </head>
 
 <body>
-  <form method="post" enctype="multipart/form-data">
-    <input type="file" name="files[]" multiple>
-    <input type="submit" value="Upload" name="submit">
+  <h1>J.A.C.K.</h1>
+  <div id="padding-header"></div>
+
+  <form id="main-form">
+    <table width=100%>
+    <tbody>
+        <tr>
+          <td>
+            <h2>Step 1</h3>
+            <h3>Select an action</h3>
+            <select id="action" name="action">
+              <option value="waveform">Audio File to Waveform</option>
+              <option value="spectrogram">Audio File to Spectrogram</option>
+            </select>
+          </td>
+          <td>
+            <h2>Step 2</h3>
+            <h3>Select an audio file (mp3)</h3>
+
+            <input id="audio_file" type="file" name="files[]" multiple>
+          </td>
+          <td>
+            <h2>Step 3</h3>
+            <h3>Start Processing</h3>
+            <input type="submit" value="Start">
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </form>
-  <img id=result src="" alt="">
+
+  <div id="divider-results"></div>
+  <h2>Results</h2>
+  <div id="results"></div>
   <script src="index.js"></script>
 </body>
 </html>
