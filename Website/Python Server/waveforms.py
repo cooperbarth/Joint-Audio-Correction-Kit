@@ -1,4 +1,5 @@
-from os.path import join
+from os.path import join, exists
+from os import mkdir
 
 from flask import send_file
 from werkzeug.utils import secure_filename
@@ -8,8 +9,17 @@ from plotting import plot_audio, plt_spectrogram
 import config
 
 
+def _create_tmp_folder():
+    if not exists(config.API_DIRECTORY):
+        mkdir(config.API_DIRECTORY)
+    if not exists(config.API_TEMP_DIRECTORY):
+        mkdir(config.API_TEMP_DIRECTORY)
+
+
 def file_to_waveform_image(file):
     print("file_to_waveform_image: started")
+    _create_tmp_folder()
+
     if file and file.filename.endswith(".mp3"):
         filename = secure_filename(file.filename)
         path = join(config.API_TEMP_DIRECTORY, filename)
@@ -34,6 +44,8 @@ def file_to_waveform_image(file):
 
 def file_to_spectrogram_image(file):
     print("file_to_spectrogram_image: started")
+    _create_tmp_folder()
+
     if file and file.filename.endswith(".mp3"):
         filename = secure_filename(file.filename)
         path = join(config.API_TEMP_DIRECTORY, filename)
