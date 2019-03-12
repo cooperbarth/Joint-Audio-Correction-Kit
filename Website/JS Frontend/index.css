@@ -5,10 +5,11 @@ body {
   text-align: center;
 }
 
-h1 {
+#title-text {
   text-align: center;
   font-size: 50px;
   margin: 0px;
+  font-weight: 600;
 }
 
 h2 {
@@ -34,10 +35,11 @@ table {
 }
 
 #divider-results {
-  margin: 40px;
+  margin: 150px;
+  margin-top: 30px;
   margin-bottom: 0px;
   height: 4px;
-  weight: 100px;
-  border-radius: 2px;
+  weight: 4px;
+  border-radius: 4px;
   background-color: rgba(154, 154, 154, 0.5);
 }
