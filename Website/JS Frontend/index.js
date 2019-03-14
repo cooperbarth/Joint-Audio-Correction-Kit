@@ -7,8 +7,10 @@ form.addEventListener('submit', e => {
     const formData = new FormData();
     formData.append('audio_file', file);
 
-    let endpoint = "file_denoiser"
+    const blob = new Blob([file]);
+    document.getElementById("before-audio").src = URL.createObjectURL(blob)
 
+    let endpoint = "file_denoiser"
     fetch('http://127.0.0.1:5000/api/' + endpoint, {
       method: 'POST',
       body: formData
@@ -31,7 +33,7 @@ function fetchData(results) {
     return resp.blob();
   }).then(function(blob) {
     document.getElementById("before-image").src = URL.createObjectURL(blob)
-  })
+  }).catch(error => alert(error));
 
   fetch('http://127.0.0.1:5000/api/data/' + new_spectogram_name, {
     method: 'GET'
@@ -39,15 +41,14 @@ function fetchData(results) {
     return resp.blob();
   }).then(function(blob) {
     document.getElementById("after-image").src = URL.createObjectURL(blob)
-  })
+  }).catch(error => alert(error));
 
   fetch('http://127.0.0.1:5000/api/data/' + denoised_audio_path, {
     method: 'GET'
   }).then(function(resp) {
     return resp.blob();
   }).then(function(blob) {
-    alert(12)
     document.getElementById("after-audio").src = URL.createObjectURL(blob)
-  })
+  }).catch(error => alert(error));
 
 }

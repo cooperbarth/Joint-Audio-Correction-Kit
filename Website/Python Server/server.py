@@ -1,16 +1,15 @@
-from flask import Flask, request, redirect, send_file
-
-import config
-
 from os.path import join, exists
 from os import mkdir
-from flask import jsonify
+import logging
 
+import config
+from flask import Flask, request, redirect, send_file, jsonify
 from plotting import plot_audio, plt_spectrogram
-app = Flask(__name__)
 
 from placeholder import this_is_going_to_totally_work_right
 from save_audio import wavwrite, process_request
+
+app = Flask(__name__)
 
 
 @app.route('/')
@@ -18,19 +17,33 @@ def hmm():
     return redirect("https://www.youtube.com/watch?v=25QyCxVkXwQ")
 
 
+# https://stackoverflow.com/questions/34066804/disabling-caching-in-flask
+@app.after_request
+def add_header(r):
+    """
+    Add headers to both force latest IE rendering engine or Chrome Frame,
+    and also to cache the rendered page for 10 minutes.
+    """
+    r.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    r.headers["Pragma"] = "no-cache"
+    r.headers["Expires"] = "0"
+    r.headers['Cache-Control'] = 'public, max-age=0'
+    return r
+
+
 @app.route('/api/data/<filename>', methods=['GET'])
 def fetch_file(filename):
-    print("carrying the team x 2")
+    app.logger.info("carrying the team x 2")
+    app.logger.info("grabbing " + str(filename))
     return send_file(config.API_TEMP_DIRECTORY + filename)
 
 
 @app.route('/api/file_denoiser', methods=['POST'])
 def file_denoiser():
+    app.logger.info("file_denoiser: loading file")
     signal, sample_rate, filename = process_request(request)
 
-    print("file_denoiser: loading file")
-
-    print("file_denoiser: plotting file")
+    app.logger.info("file_denoiser: plotting file")
     window_size = int(512)
 
     original_spectogram_path = plt_spectrogram(
@@ -43,7 +56,8 @@ def file_denoiser():
     denoised_signal = this_is_going_to_totally_work_right(signal, sample_rate)
 
     new_spectogram_path = plt_spectrogram(
-        signal, window_size,
+        denoised_signal,
+        window_size,
         int(window_size / 2),
         sample_rate,
         filename="new-" + filename)
@@ -51,7 +65,7 @@ def file_denoiser():
     denoised_audio_path = config.API_TEMP_DIRECTORY + filename + '.wav'
     wavwrite(denoised_audio_path, denoised_signal, sample_rate)
 
-    print("file_denoiser: sending file")
+    app.logger.info("file_denoiser: sending json")
     return jsonify({
         "original_spectogram_name": original_spectogram_path.rsplit('/', 1)[-1],
         "new_spectogram_name": new_spectogram_path.rsplit('/', 1)[-1],

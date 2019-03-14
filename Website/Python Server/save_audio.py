@@ -41,11 +41,12 @@ def process_request(request):
             file = file_storage
 
     if not file:
-        print("process_request: no file")
+        app.logger.error("process_request: no file")
         return
 
     if not file.filename.endswith(".mp3"):
-        return "error"
+        app.logger.error("not mp3")
+        return
 
     filename = secure_filename(file.filename).split(".")[0]
     path = join(config.API_TEMP_DIRECTORY, filename)
