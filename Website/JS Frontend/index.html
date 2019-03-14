@@ -7,40 +7,48 @@
 </head>
 
 <body>
-  <h1>J.A.C.K.</h1>
+  <div id="title-text">J.A.C.K.<sub> jr</sub></div>
   <div id="padding-header"></div>
 
   <form id="main-form">
     <table width=100%>
+      <tbody>
+        <tr>
+          <td>
+            <h3>Select an audio file (mp3)</h3>
+            <input id="audio_file" type="file" name="files[]" multiple>
+            <input type="submit" value="Denoise">
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <div id="divider-results"> </div>
+    <table width=100%>
     <tbody>
         <tr>
           <td>
-            <h2>Step 1</h3>
-            <h3>Select an action</h3>
-            <select id="action" name="action">
-              <option value="waveform">Audio File to Waveform</option>
-              <option value="spectrogram">Audio File to Spectrogram</option>
-            </select>
+            <h2>Before</h2>
+            <img id="before-image" src="./09_Star_Tours.mp3.png"></img>
+            <audio controls>
+              <source id="before-audio" src="" type="audio/mp3">
+            </audio>
           </td>
-          <td>
-            <h2>Step 2</h3>
-            <h3>Select an audio file (mp3)</h3>
 
-            <input id="audio_file" type="file" name="files[]" multiple>
-          </td>
+        </tr>
+        <tr>
           <td>
-            <h2>Step 3</h3>
-            <h3>Start Processing</h3>
-            <input type="submit" value="Start">
+            <h2>After</h2>
+            <img id="after-image" src="./09_Star_Tours.mp3.png"></img>
+            <audio controls>
+              <source id="after-audio" src="" type="audio/mp3">
+            </audio>
           </td>
         </tr>
       </tbody>
     </table>
   </form>
 
-  <div id="divider-results"></div>
-  <h2>Results</h2>
-  <div id="results"></div>
+
   <script src="index.js"></script>
 </body>
 </html>
