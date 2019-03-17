@@ -104,3 +104,4 @@ venv.bak/
 .mypy_cache/
 
 Website/Python Server/api/tmp/*
+.DS_Store
