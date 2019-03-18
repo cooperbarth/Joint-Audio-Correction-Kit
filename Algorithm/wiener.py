@@ -1,16 +1,12 @@
-import numpy as np
-import scipy as sp
-import librosa
-import sys
+import numpy as np, scipy as sp, librosa, sys
 from pathlib import Path
 
-default_sr = 44100
-window_type = 'hamming'
-window_length = 2048
-hop_size = 1024
+DEFAULT_SR = 44100
+WINDOW_TYPE = 'hamming'
+WINDOW_LENGTH = 2048
+HOP_SIZE = 1024
 
-
-def generate_noise(signal, snr_desired=5, sr=44100):
+def generate_noise(signal, snr_desired=5, sr=DEFAULT_SR):
     """
     Applies background noise to a clean track
     :param signal: original signal that will have noise applied to it
@@ -71,8 +67,8 @@ def reconstruction(stft_noisy, signal_est_mag):
     """
     phase_noisy = np.angle(stft_noisy)
     stft_signal_est = np.multiply(signal_est_mag, np.exp(1j * phase_noisy))
-    _, signal_est = sp.signal.istft(stft_signal_est, window=window_type, nperseg=window_length,
-                                    noverlap=hop_size)
+    _, signal_est = sp.signal.istft(stft_signal_est, window=WINDOW_TYPE, nperseg=WINDOW_LENGTH,
+                                    noverlap=HOP_SIZE)
 
     return signal_est
 
@@ -103,7 +99,7 @@ def regeneration(orig_sig, reduced_sig, ro, NL="max"):
 
     #gamma represents the noise power spectral density of the original noisy signal
     X = sp.fftpack.fft(orig_sig)
-    gamma = sp.signal.periodogram(X, fs=default_sr, window=window_type)[1]
+    gamma = sp.signal.periodogram(X, fs=DEFAULT_SR, window=WINDOW_TYPE)[1]
     
     #SNRpost(p, wk) = |X(p, wk)|^2 / gamma(p, wk)
     SNR_post = (X ** 2) / gamma
@@ -138,20 +134,20 @@ def wiener_filtering(clean_signal, filepath):
     """
     noisy_signal = generate_noise(clean_signal)
 
-    write_name = str(filepath).split("/")[1].split(".")[0]
+    write_name = filepath.split(".")[0]
     new_path = "test_audio_noisy/" + write_name + "_noisy.wav"
-    wavwrite(new_path, noisy_signal, default_sr)
+    wavwrite(new_path, noisy_signal, DEFAULT_SR)
 
-    _, _, stft_noisy = sp.signal.stft(noisy_signal, window=window_type, nperseg=window_length,
-                                      noverlap=hop_size)
+    _, _, stft_noisy = sp.signal.stft(noisy_signal, window=WINDOW_TYPE, nperseg=WINDOW_LENGTH,
+                                      noverlap=HOP_SIZE)
 
-    signal_est_mag = denoising(stft_noisy, start_frame=12)
+    signal_est_mag = denoising(stft_noisy)
     signal_est_reconstruction = reconstruction(stft_noisy, signal_est_mag)
     signal_est = regeneration(noisy_signal, signal_est_reconstruction, 0.9)
 
     write_name = str(filepath).split("/")[1].split(".")[0]
     new_path = "test_audio_results/" + write_name + "_reduced.wav"
-    wavwrite(new_path, signal_est, default_sr)
+    wavwrite(new_path, signal_est, DEFAULT_SR)
 
 
 if __name__ == '__main__':
@@ -161,13 +157,13 @@ if __name__ == '__main__':
                 filename += ".wav"
             filepath = "test_audio/" + filename
             try:
-                clean_signal, _ = librosa.load(filepath, sr=default_sr)
+                clean_signal, _ = librosa.load(filepath, sr=DEFAULT_SR)
             except:
                 print(filename + " is not a valid file name.")
                 continue
-            wiener_filtering(clean_signal, filepath)
+            wiener_filtering(clean_signal, filename)
     else:
         pathlist = Path("test_audio").glob('**/*.wav')
-        for path in pathlist:
-            clean_signal, _ = librosa.load(filepath, sr=default_sr)
-            wiener_filtering(clean_signal)
+        for filepath in pathlist:
+            clean_signal, _ = librosa.load(filepath, sr=DEFAULT_SR)
+            wiener_filtering(clean_signal, str(filepath).split("/")[1])
