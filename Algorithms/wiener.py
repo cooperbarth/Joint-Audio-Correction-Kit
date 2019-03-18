@@ -77,6 +77,7 @@ def reconstruction(stft_noisy, signal_est_mag):
     return signal_est
 
 #Inspiration from: https://ieeexplore.ieee.org/document/1415074/
+#All variables are named after paper variables, can change later
 def regeneration(orig_sig, reduced_sig, ro, NL="max"):
     """
     Reincludes lost harmonics into a reconstructed signal.
@@ -87,29 +88,40 @@ def regeneration(orig_sig, reduced_sig, ro, NL="max"):
     :return: 1D numpy array with harmonic-added signal
     """
 
+    #Getting S(p, wk) for later
+    S = sp.fftpack.fft(reduced_sig)
+
     #getting S_harmo, the harmonic amplifier in the frequency domain
     if NL == "max":
-        s_harmo = orig_sig.copy()
+        s_harmo = reduced_sig.copy()
         s_harmo[s_harmo < 0] = 0
     else:
         if NL != "abs":
             print("Non-linear function defaulting to absolute value.")
-        s_harmo = np.abs(orig_sig)
+        s_harmo = np.abs(reduced_sig)
     S_harmo = sp.fftpack.fft(s_harmo)
 
     #gamma represents the noise power spectral density of the original noisy signal
-    orig_sig_freq = sp.fftpack.fft(orig_sig)
-    gamma = sp.signal.periodogram(orig_sig_freq, fs=default_sr, window=window_length)
+    X = sp.fftpack.fft(orig_sig)
+    gamma = sp.signal.periodogram(X, fs=default_sr, window=window_length)
     
     #SNRpost(p, wk) = |X(p, wk)|^2 / gamma(p, wk)
-    SNR_post = (orig_sig_freq ** 2) / gamma
+    SNR_post = (X ** 2) / gamma
 
-    #TODO: this is probably wrong
-    #defining our filtering function
+    #calculate SNR_harmo(p, wk) for use in finding suppression gain
+    SNR_harmo = (ro * (S ** 2)) + ((1 - ro) * (S_harmo ** 2)) / gamma
+    
+    #TODO: choose filter and edit this
+    #defining our filtering function, either wiener or spectral subtraction
     def h(harmo, post):
         return sp.signal.wiener(harmo)
 
-    
+    #calculate suppression gain
+    G_harmo = h(SNR_harmo, SNR_post)
+
+    regenerated_signal = G_harmo * X
+    return sp.fftpack.ifft(regenerated_signal)
+
 
 def wavwrite(filepath, data, sr, norm=True, dtype='int16'):
     if norm:
