@@ -103,7 +103,7 @@ def regeneration(orig_sig, reduced_sig, ro, NL="max"):
 
     #gamma represents the noise power spectral density of the original noisy signal
     X = sp.fftpack.fft(orig_sig)
-    gamma = sp.signal.periodogram(X, fs=default_sr, window=window_length)
+    gamma = sp.signal.periodogram(X, fs=default_sr, window=window_type)[1]
     
     #SNRpost(p, wk) = |X(p, wk)|^2 / gamma(p, wk)
     SNR_post = (X ** 2) / gamma
@@ -131,16 +131,14 @@ def wavwrite(filepath, data, sr, norm=True, dtype='int16'):
     sp.io.wavfile.write(filepath, sr, data)
 
 
-def wiener_filtering(filepath):
+def wiener_filtering(clean_signal, filepath):
     """
     Performs Wiener Filtering on a file located at filepath
-    :param filepath: The location of the source file to have noise applied and then removed
-    :return:
+    :param clean_signal: 1D numpy array containing the signal of a clean audio file
     """
-    clean_signal, _ = librosa.load(filepath, sr=default_sr)
     noisy_signal = generate_noise(clean_signal)
 
-    write_name = str(path).split("/")[1].split(".")[0]
+    write_name = str(filepath).split("/")[1].split(".")[0]
     new_path = "test_audio_noisy/" + write_name + "_noisy.wav"
     wavwrite(new_path, noisy_signal, default_sr)
 
@@ -148,9 +146,10 @@ def wiener_filtering(filepath):
                                       noverlap=hop_size)
 
     signal_est_mag = denoising(stft_noisy, start_frame=12)
-    signal_est = reconstruction(stft_noisy, signal_est_mag)
+    signal_est_reconstruction = reconstruction(stft_noisy, signal_est_mag)
+    signal_est = regeneration(noisy_signal, signal_est_reconstruction, 0.9)
 
-    write_name = str(path).split("/")[1].split(".")[0]
+    write_name = str(filepath).split("/")[1].split(".")[0]
     new_path = "test_audio_results/" + write_name + "_reduced.wav"
     wavwrite(new_path, signal_est, default_sr)
 
@@ -160,11 +159,15 @@ if __name__ == '__main__':
         for filename in sys.argv[1:]:
             if filename[-4:] != ".wav":
                 filename += ".wav"
+            filepath = "test_audio/" + filename
             try:
-                wiener_filtering("test_audio/" + filename)
+                clean_signal, _ = librosa.load(filepath, sr=default_sr)
             except:
                 print(filename + " is not a valid file name.")
+                continue
+            wiener_filtering(clean_signal, filepath)
     else:
         pathlist = Path("test_audio").glob('**/*.wav')
         for path in pathlist:
-            wiener_filtering(path)
+            clean_signal, _ = librosa.load(filepath, sr=default_sr)
+            wiener_filtering(clean_signal)
