@@ -67,7 +67,7 @@ def reconstruction(stft_noisy, signal_est_mag):
     Reconstructs the signal by re-adding phase components to the magnitude estimate
     :param stft_noisy: the fourier transform of a noisy signal
     :param signal_est_mag: the noise reduced signal's estimated magnitude
-    :return: Noise reduced signal
+    :return: Noise reduced signal in the time domain
     """
     phase_noisy = np.angle(stft_noisy)
     stft_signal_est = np.multiply(signal_est_mag, np.exp(1j * phase_noisy))
@@ -76,6 +76,40 @@ def reconstruction(stft_noisy, signal_est_mag):
 
     return signal_est
 
+#Inspiration from: https://ieeexplore.ieee.org/document/1415074/
+def regeneration(orig_sig, reduced_sig, ro, NL="max"):
+    """
+    Reincludes lost harmonics into a reconstructed signal.
+    :param orig_sig: the original noisy signal in the time domain
+    :param reduced_sig: the signal after reconstuction in the time domain
+    :param ro: the mixing level, typically a double between 0 and 1
+    :param NL: the non-linear function to be used in generating the harmonics
+    :return: 1D numpy array with harmonic-added signal
+    """
+
+    #getting S_harmo, the harmonic amplifier in the frequency domain
+    if NL == "max":
+        s_harmo = orig_sig.copy()
+        s_harmo[s_harmo < 0] = 0
+    else:
+        if NL != "abs":
+            print("Non-linear function defaulting to absolute value.")
+        s_harmo = np.abs(orig_sig)
+    S_harmo = sp.fftpack.fft(s_harmo)
+
+    #gamma represents the noise power spectral density of the original noisy signal
+    orig_sig_freq = sp.fftpack.fft(orig_sig)
+    gamma = sp.signal.periodogram(orig_sig_freq, fs=default_sr, window=window_length)
+    
+    #SNRpost(p, wk) = |X(p, wk)|^2 / gamma(p, wk)
+    SNR_post = (orig_sig_freq ** 2) / gamma
+
+    #TODO: this is probably wrong
+    #defining our filtering function
+    def h(harmo, post):
+        return sp.signal.wiener(harmo)
+
+    
 
 def wavwrite(filepath, data, sr, norm=True, dtype='int16'):
     if norm:
