@@ -135,7 +135,11 @@ def wiener_filtering(clean_signal, filename):
                                       noverlap=HOP_SIZE)
 
     signal_est_mag = denoising(stft_noisy)
+
     signal_est_reconstruction = reconstruction(stft_noisy, signal_est_mag)
+    new_path = "test_audio_reconstructed/" + write_name + "_reconstructed.wav"
+    wavwrite(new_path, noisy_signal, DEFAULT_SR)
+
     signal_est = regeneration(noisy_signal, signal_est_reconstruction)
 
     new_path = "test_audio_results/" + write_name + "_reduced.wav"
