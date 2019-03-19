@@ -83,9 +83,6 @@ def regeneration(orig_sig, reduced_sig, ro=0.5, NL="max"):
     :return: 1D numpy array with harmonic-added signal
     """
 
-    #Getting S(p, wk) for later
-    S = sp.fftpack.fft(reduced_sig)
-
     #getting S_harmo, the harmonic amplifier in the frequency domain
     if NL == "max":
         s_harmo = reduced_sig.copy()
@@ -105,12 +102,14 @@ def regeneration(orig_sig, reduced_sig, ro=0.5, NL="max"):
     SNR_post = (X ** 2) / gamma
 
     #calculate SNR_harmo(p, wk) for use in finding suppression gain
+    S = sp.fftpack.fft(reduced_sig)
     SNR_harmo = ((ro * (S ** 2)) + ((1 - ro) * (S_harmo ** 2))) / gamma
     
     #calculate suppression gain
     G_harmo = SNR_harmo / (1 + SNR_harmo)
 
-    return sp.fftpack.ifft(G_harmo * X)
+    #TODO: Is this S or X???
+    return sp.fftpack.ifft(G_harmo * S)
 
 def wavwrite(filepath, data, sr, norm=True, dtype='int16'):
     if norm:
