@@ -1,4 +1,4 @@
-import numpy as np, scipy as sp, librosa, sys
+import numpy as np, scipy as sp, librosa, sys, matplotlib.pyplot as plt
 from pathlib import Path
 
 DEFAULT_SR = 44100
@@ -74,7 +74,7 @@ def reconstruction(stft_noisy, signal_est_mag):
 
 #Inspiration from: https://ieeexplore.ieee.org/document/1415074/
 #All variables are named after paper variables, can change later
-def regeneration(orig_sig, reduced_sig, ro, NL="max"):
+def regeneration(orig_sig, reduced_sig, ro=0.1, NL="max"):
     """
     Reincludes lost harmonics into a reconstructed signal.
     :param orig_sig: the original noisy signal in the time domain
@@ -98,25 +98,33 @@ def regeneration(orig_sig, reduced_sig, ro, NL="max"):
     S_harmo = sp.fftpack.fft(s_harmo)
 
     #gamma represents the noise power spectral density of the original noisy signal
-    X = sp.fftpack.fft(orig_sig)
-    gamma = sp.signal.periodogram(X, fs=DEFAULT_SR, window=WINDOW_TYPE)[1]
-    
+    orig_padded = np.concatenate((orig_sig, np.zeros(len(reduced_sig) - len(orig_sig)))) #pad signal
+    freqs, gamma = sp.signal.periodogram(orig_padded, window=WINDOW_TYPE, return_onesided=False)
+
     #SNRpost(p, wk) = |X(p, wk)|^2 / gamma(p, wk)
+    X = sp.fftpack.fft(orig_padded)
     SNR_post = (X ** 2) / gamma
 
     #calculate SNR_harmo(p, wk) for use in finding suppression gain
     SNR_harmo = (ro * (S ** 2)) + ((1 - ro) * (S_harmo ** 2)) / gamma
     
-    #TODO: choose filter and edit this
+    #TODO: this is wrong
     #defining our filtering function, either wiener or spectral subtraction
     def h(harmo, post):
+        plt.figure()
+        plt.plot(harmo)
+        plt.savefig('harmo.png')
+
+        plt.figure()
+        plt.plot(harmo)
+        plt.savefig('post.png')
+
         return sp.signal.wiener(harmo)
 
     #calculate suppression gain
     G_harmo = h(SNR_harmo, SNR_post)
 
-    regenerated_signal = G_harmo * X
-    return sp.fftpack.ifft(regenerated_signal)
+    return sp.fftpack.ifft(G_harmo * X)
 
 
 def wavwrite(filepath, data, sr, norm=True, dtype='int16'):
@@ -127,14 +135,15 @@ def wavwrite(filepath, data, sr, norm=True, dtype='int16'):
     sp.io.wavfile.write(filepath, sr, data)
 
 
-def wiener_filtering(clean_signal, filepath):
+def wiener_filtering(clean_signal, filename):
     """
     Performs Wiener Filtering on a file located at filepath
     :param clean_signal: 1D numpy array containing the signal of a clean audio file
+    :param filename: string of the audio file name
     """
     noisy_signal = generate_noise(clean_signal)
 
-    write_name = filepath.split(".")[0]
+    write_name = filename.split(".")[0]
     new_path = "test_audio_noisy/" + write_name + "_noisy.wav"
     wavwrite(new_path, noisy_signal, DEFAULT_SR)
 
@@ -143,12 +152,10 @@ def wiener_filtering(clean_signal, filepath):
 
     signal_est_mag = denoising(stft_noisy)
     signal_est_reconstruction = reconstruction(stft_noisy, signal_est_mag)
-    signal_est = regeneration(noisy_signal, signal_est_reconstruction, 0.9)
+    signal_est = regeneration(noisy_signal, signal_est_reconstruction)
 
-    write_name = str(filepath).split("/")[1].split(".")[0]
     new_path = "test_audio_results/" + write_name + "_reduced.wav"
-    wavwrite(new_path, signal_est, DEFAULT_SR)
-
+    wavwrite(new_path, np.abs(signal_est), DEFAULT_SR)
 
 if __name__ == '__main__':
     if len(sys.argv) > 1:
