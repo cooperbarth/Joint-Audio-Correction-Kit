@@ -73,7 +73,7 @@ def reconstruction(stft_noisy, signal_est_mag):
     return signal_est
 
 #Inspiration from: https://ieeexplore.ieee.org/document/1415074/ and https://bit.ly/2FfMpz7
-def regeneration(orig_sig, reduced_sig, ro=0.1, NL="max"):
+def regeneration(orig_sig, reduced_sig, ro=0.5, NL="max"):
     """
     Reincludes lost harmonics into a reconstructed signal.
     :param orig_sig: the original noisy signal in the time domain
@@ -105,13 +105,12 @@ def regeneration(orig_sig, reduced_sig, ro=0.1, NL="max"):
     SNR_post = (X ** 2) / gamma
 
     #calculate SNR_harmo(p, wk) for use in finding suppression gain
-    SNR_harmo = (ro * (S ** 2)) + ((1 - ro) * (S_harmo ** 2)) / gamma
+    SNR_harmo = ((ro * (S ** 2)) + ((1 - ro) * (S_harmo ** 2))) / gamma
     
     #calculate suppression gain
     G_harmo = SNR_harmo / (1 + SNR_harmo)
 
     return sp.fftpack.ifft(G_harmo * X)
-
 
 def wavwrite(filepath, data, sr, norm=True, dtype='int16'):
     if norm:
