@@ -72,8 +72,7 @@ def reconstruction(stft_noisy, signal_est_mag):
 
     return signal_est
 
-#Inspiration from: https://ieeexplore.ieee.org/document/1415074/
-#All variables are named after paper variables, can change later
+#Inspiration from: https://ieeexplore.ieee.org/document/1415074/ and https://bit.ly/2FfMpz7
 def regeneration(orig_sig, reduced_sig, ro=0.1, NL="max"):
     """
     Reincludes lost harmonics into a reconstructed signal.
@@ -108,21 +107,8 @@ def regeneration(orig_sig, reduced_sig, ro=0.1, NL="max"):
     #calculate SNR_harmo(p, wk) for use in finding suppression gain
     SNR_harmo = (ro * (S ** 2)) + ((1 - ro) * (S_harmo ** 2)) / gamma
     
-    #TODO: this is wrong
-    #defining our filtering function, either wiener or spectral subtraction
-    def h(harmo, post):
-        plt.figure()
-        plt.plot(harmo)
-        plt.savefig('harmo.png')
-
-        plt.figure()
-        plt.plot(harmo)
-        plt.savefig('post.png')
-
-        return sp.signal.wiener(harmo)
-
     #calculate suppression gain
-    G_harmo = h(SNR_harmo, SNR_post)
+    G_harmo = SNR_harmo / (1 + SNR_harmo)
 
     return sp.fftpack.ifft(G_harmo * X)
 
