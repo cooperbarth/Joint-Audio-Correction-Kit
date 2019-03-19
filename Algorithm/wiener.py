@@ -109,7 +109,7 @@ def regeneration(orig_sig, reduced_sig, ro=0.5, NL="max"):
     G_harmo = SNR_harmo / (1 + SNR_harmo)
 
     #TODO: Is this S or X???
-    return sp.fftpack.ifft(G_harmo * S)
+    return sp.fftpack.ifft(G_harmo * X)
 
 def wavwrite(filepath, data, sr, norm=True, dtype='int16'):
     if norm:
@@ -138,7 +138,7 @@ def wiener_filtering(clean_signal, filename):
 
     signal_est_reconstruction = reconstruction(stft_noisy, signal_est_mag)
     new_path = "test_audio_reconstructed/" + write_name + "_reconstructed.wav"
-    wavwrite(new_path, noisy_signal, DEFAULT_SR)
+    wavwrite(new_path, signal_est_reconstruction, DEFAULT_SR)
 
     signal_est = regeneration(noisy_signal, signal_est_reconstruction)
 
