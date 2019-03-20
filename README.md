@@ -35,10 +35,11 @@ A modern solution for audio noise reduction and active noise cancellation.
 ----- [all above should be like poster]
 
 ## Installation Instructions
-1. X
-2. Y
-3. Z
-
-
+1. git clone `https://github.com/cooperbarth/Joint-Audio-Correction-Kit`
+2. cd into `/Website/Python Server/`
+4. install the required packages `conda create -n eecs352p --file requirements.txt`
+5. start the local server run `FLASK_APP=server.py FLASK_DEBUG=1 python -m flask run`
+6. cd into `/Website/JS Frontend/`
+7. open `index.html`
 
 Created by Cooper Barth, Andrew Finke, and Jack Wiig for EECS 352 - Machine Perception of Music and Audio @ Northwestern University
