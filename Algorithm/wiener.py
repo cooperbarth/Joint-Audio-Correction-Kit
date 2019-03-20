@@ -137,7 +137,6 @@ def regeneration(orig_sig, reduced_sig, ro=0.1, NL="max"):
     #calculate suppression gain
     G_harmo = SNR_harmo / (1 + SNR_harmo)
 
-    #TODO: Is this S or X???
     return np.abs(sp.fftpack.ifft(G_harmo * X))
 
 def wavwrite(filepath, data, sr, norm=True, dtype='int16'):
