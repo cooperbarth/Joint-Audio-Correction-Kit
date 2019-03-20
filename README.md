@@ -1,4 +1,9 @@
 [this will be rendered as the github pages site]
+- https://cooperbarth.github.io/Joint-Audio-Correction-Kit/
+
+
+[start]
+
 
 # Joint Audio Correction Kit (J.A.C.K.)
 A modern solution for audio noise reduction and active noise cancellation.
