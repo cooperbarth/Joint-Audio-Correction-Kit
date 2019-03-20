@@ -1,33 +1,14 @@
 import numpy as np, scipy as sp, librosa, sys, matplotlib, matplotlib.pyplot as plt
 from pathlib import Path
 
+from generate_noise import generate_noise
+
+np.seterr(divide='ignore', invalid='ignore')
+
 DEFAULT_SR = 44100
 WINDOW_TYPE = 'hamming'
 WINDOW_LENGTH = 2048
 HOP_SIZE = 1024
-
-def generate_noise(signal, snr_desired=25, sr=DEFAULT_SR):
-    """
-    Applies background noise to a clean track
-    :param signal: original signal that will have noise applied to it
-    :param snr_desired: sample-to-noise ratio desired (in dB)
-    :param sr: the sample rate of the noise (44100)
-    :return: a 1-d numpy array of a noisy signal made from a sinusoid of frequency fs, duration signal_duration
-    """
-    signal_length = signal.size
-    noise_length = int(signal_length + np.ceil(0.5 * sr))
-
-    # Apply the noise factor to the noisy signal
-    noise_factor = np.sqrt((1/signal_length) * (np.sum(np.square(signal)) / np.power(10, snr_desired / 10)))
-    noisy_signal = noise_factor * np.random.randn(noise_length)
-
-    signal_start = int(np.floor(0.5*sr))
-    signal_range = signal_start + np.arange(0, signal_length)
-
-    noisy_signal[signal_range] = noisy_signal[signal_range] + signal
-
-    return noisy_signal
-
 
 def denoising(stft_noisy, alpha=0.95, start_frame=12):
     """
@@ -161,7 +142,7 @@ def wiener_filtering(clean_signal, filename):
     plt_spectrogram(noisy_signal, WINDOW_LENGTH, HOP_SIZE, DEFAULT_SR, filename='noisy')
 
     write_name = filename.split(".")[0]
-    new_path = "test_audio_noisy/" + write_name + "_noisy.wav"
+    new_path = "audio/test_audio_noisy/" + write_name + "_noisy.wav"
     wavwrite(new_path, noisy_signal, DEFAULT_SR)
 
     _, _, stft_noisy = sp.signal.stft(noisy_signal, window=WINDOW_TYPE, nperseg=WINDOW_LENGTH,
@@ -170,14 +151,14 @@ def wiener_filtering(clean_signal, filename):
     signal_est_mag = denoising(stft_noisy)
 
     signal_est_reconstruction = reconstruction(stft_noisy, signal_est_mag)
-    new_path = "test_audio_reconstructed/" + write_name + "_reconstructed.wav"
+    new_path = "audio/test_audio_reconstructed/" + write_name + "_reconstructed.wav"
     wavwrite(new_path, signal_est_reconstruction, DEFAULT_SR)
     plt_spectrogram(signal_est_reconstruction, WINDOW_LENGTH, HOP_SIZE, DEFAULT_SR, filename='reconstructed')
 
     signal_est = regeneration(noisy_signal, signal_est_reconstruction)
     plt_spectrogram(signal_est, WINDOW_LENGTH, HOP_SIZE, DEFAULT_SR, filename='regenerated')
 
-    new_path = "test_audio_results/" + write_name + "_reduced.wav"
+    new_path = "audio/test_audio_results/" + write_name + "_reduced.wav"
     wavwrite(new_path, np.abs(signal_est), DEFAULT_SR)
 
 if __name__ == '__main__':
@@ -185,7 +166,7 @@ if __name__ == '__main__':
         for filename in sys.argv[1:]:
             if filename[-4:] != ".wav":
                 filename += ".wav"
-            filepath = "test_audio/" + filename
+            filepath = "audio/test_audio/" + filename
             try:
                 clean_signal, _ = librosa.load(filepath, sr=DEFAULT_SR)
             except:
@@ -193,7 +174,7 @@ if __name__ == '__main__':
                 continue
             wiener_filtering(clean_signal, filename)
     else:
-        pathlist = Path("test_audio").glob('**/*.wav')
+        pathlist = Path("audio/test_audio").glob('**/*.wav')
         for filepath in pathlist:
             clean_signal, _ = librosa.load(filepath, sr=DEFAULT_SR)
             wiener_filtering(clean_signal, str(filepath).split("/")[1])
