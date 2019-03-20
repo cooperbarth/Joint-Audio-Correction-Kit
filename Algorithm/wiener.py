@@ -6,7 +6,7 @@ WINDOW_TYPE = 'hamming'
 WINDOW_LENGTH = 2048
 HOP_SIZE = 1024
 
-def generate_noise(signal, snr_desired=5, sr=DEFAULT_SR):
+def generate_noise(signal, snr_desired=25, sr=DEFAULT_SR):
     """
     Applies background noise to a clean track
     :param signal: original signal that will have noise applied to it
@@ -71,8 +71,38 @@ def reconstruction(stft_noisy, signal_est_mag):
 
     return signal_est
 
+def plt_spectrogram(X, win_length, hop_size, sample_rate, zoom_x=None, zoom_y=None, tick_labels='time-freq', filename="tmp", figsize=(16, 4)):
+    matplotlib.use('agg')
+    X = librosa.stft(X, win_length, hop_size)
+    Nf, Nt = np.shape(X)
+    X = 20 * np.log10(np.abs(X))
+    X = X[0:int(Nf / 2) + 1]
+    Nf = np.shape(X)[0]
+    times = (hop_size / float(sample_rate)) * np.arange(Nt)
+    freqs = (float(sample_rate) / win_length) * np.arange(Nf)
+    times_matrix, freqs_matrix = np.meshgrid(times, freqs)
+    plt.figure(figsize=figsize)
+    plt.title('Log magnitude spectrogram')
+    if tick_labels == 'bin-frame':
+        plt.pcolormesh(X)
+        plt.xlabel('Time-frame Number')
+        plt.ylabel('Frequency-bin Number')
+    else:
+        plt.pcolormesh(times_matrix, freqs_matrix, X)
+        plt.xlabel('Time (sec)')
+        plt.ylabel('Frequency (Hz)')
+    if zoom_x is None and zoom_y is None:
+        plt.axis('tight')
+    if zoom_x is not None:
+        plt.xlim(zoom_x)
+    if zoom_y is not None:
+        plt.ylim(zoom_y)
+    
+    path = "Spectrograms/" + filename + ".png"
+    plt.savefig(path)
+
 #Inspiration from: https://ieeexplore.ieee.org/document/1415074/ and https://bit.ly/2FfMpz7
-def regeneration(orig_sig, reduced_sig, ro=0.5, NL="max"):
+def regeneration(orig_sig, reduced_sig, ro=0.1, NL="max"):
     """
     Reincludes lost harmonics into a reconstructed signal.
     :param orig_sig: the original noisy signal in the time domain
@@ -117,42 +147,17 @@ def wavwrite(filepath, data, sr, norm=True, dtype='int16'):
     data = data.astype(dtype)
     sp.io.wavfile.write(filepath, sr, data)
 
-def plt_spectrogram(X, win_length, hop_size, sample_rate, zoom_x=None, zoom_y=None, tick_labels='time-freq', filename="tmp", figsize=(16, 4)):
-    matplotlib.use('agg')
-    X = librosa.stft(X, win_length, hop_size)
-    Nf, Nt = np.shape(X)
-    X = 20 * np.log10(np.abs(X))
-    X = X[0:int(Nf / 2) + 1]
-    Nf = np.shape(X)[0]
-    times = (hop_size / float(sample_rate)) * np.arange(Nt)
-    freqs = (float(sample_rate) / win_length) * np.arange(Nf)
-    times_matrix, freqs_matrix = np.meshgrid(times, freqs)
-    plt.figure(figsize=figsize)
-    plt.title('Log magnitude spectrogram')
-    if tick_labels == 'bin-frame':
-        plt.pcolormesh(X)
-        plt.xlabel('Time-frame Number')
-        plt.ylabel('Frequency-bin Number')
-    else:
-        plt.pcolormesh(times_matrix, freqs_matrix, X)
-        plt.xlabel('Time (sec)')
-        plt.ylabel('Frequency (Hz)')
-    if zoom_x is None and zoom_y is None:
-        plt.axis('tight')
-    if zoom_x is not None:
-        plt.xlim(zoom_x)
-    if zoom_y is not None:
-        plt.ylim(zoom_y)
-    
-    path = filename + ".png"
-    plt.savefig(path)
-
 def wiener_filtering(clean_signal, filename):
     """
     Performs Wiener Filtering on a file located at filepath
     :param clean_signal: 1D numpy array containing the signal of a clean audio file
     :param filename: string of the audio file name
     """
+    if len(clean_signal) > 400000:
+        clean_signal = clean_signal[:400000]
+
+    plt_spectrogram(clean_signal, WINDOW_LENGTH, HOP_SIZE, DEFAULT_SR, filename='clean')
+
     noisy_signal = generate_noise(clean_signal)
     plt_spectrogram(noisy_signal, WINDOW_LENGTH, HOP_SIZE, DEFAULT_SR, filename='noisy')
 
