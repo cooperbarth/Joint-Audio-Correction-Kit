@@ -1,8 +1,9 @@
-import numpy as np, scipy as sp
+import numpy as np
 
+SNR = 10
 DEFAULT_SR = 44100
 
-def generate_noise(signal, snr_desired=25, sr=DEFAULT_SR):
+def generate_noise(signal, snr_desired=SNR, sr=DEFAULT_SR):
     """
     Applies background noise to a clean track
     :param signal: original signal that will have noise applied to it
