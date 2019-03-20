@@ -1,10 +1,18 @@
 import numpy as np, scipy as sp
 
+#Ro should be 0 or another constant when regeneration needed, and 1 otherwise
 RO = 0.1
+
 NL = "max"
 WINDOW_TYPE = 'hamming'
 
-#Inspiration from: https://ieeexplore.ieee.org/document/1415074/ and https://bit.ly/2FfMpz7
+'''
+Inspiration: 
+    https://bit.ly/2W6T6dJ
+    https://bit.ly/2FfMpz7
+    https://bit.ly/2FpNKop
+    https://bit.ly/2Cx8eKe - MATLAB code
+'''
 def regeneration(orig_sig, reduced_sig, ro=RO, NL=NL):
     """
     Reincludes lost harmonics into a reconstructed signal.

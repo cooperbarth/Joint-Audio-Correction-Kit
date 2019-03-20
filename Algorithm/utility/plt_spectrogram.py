@@ -31,5 +31,5 @@ def plt_spectrogram(X, win_length=WINDOW_LENGTH, hop_size=HOP_SIZE, sample_rate=
     if zoom_y is not None:
         plt.ylim(zoom_y)
     
-    path = "Spectrograms/" + filename + ".png"
+    path = "spectrograms/" + filename + ".png"
     plt.savefig(path)
