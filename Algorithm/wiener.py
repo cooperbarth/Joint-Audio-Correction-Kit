@@ -1,4 +1,4 @@
-import numpy as np, scipy as sp, librosa, sys, matplotlib.pyplot as plt
+import numpy as np, scipy as sp, librosa, sys, matplotlib, matplotlib.pyplot as plt
 from pathlib import Path
 
 DEFAULT_SR = 44100
@@ -45,7 +45,7 @@ def denoising(stft_noisy, alpha=0.95, start_frame=12):
 
     signal_est_mag = np.zeros(stft_noisy.shape)
 
-    for frame_number in range(start_frame, num_frames):
+    for frame_number in range(0, num_frames): #changed this from range(start_frame, end_frame)
         noisy_frame = np.abs(stft_noisy[:, frame_number])
         current_post_snr = np.divide(np.square(noisy_frame), noise_estimation)
         prior_snr = (alpha * np.square(filter_gain) + last_post_snr) * \
@@ -56,7 +56,6 @@ def denoising(stft_noisy, alpha=0.95, start_frame=12):
         signal_est_mag[:, frame_number] = np.multiply(filter_gain, noisy_frame)
 
     return signal_est_mag
-
 
 def reconstruction(stft_noisy, signal_est_mag):
     """
@@ -94,7 +93,7 @@ def regeneration(orig_sig, reduced_sig, ro=0.5, NL="max"):
     S_harmo = sp.fftpack.fft(s_harmo)
 
     #gamma represents the noise power spectral density of the original noisy signal
-    orig_padded = np.concatenate((orig_sig, np.zeros(len(reduced_sig) - len(orig_sig)))) #pad signal
+    orig_padded = np.concatenate((np.zeros(len(reduced_sig) - len(orig_sig)), orig_sig)) #pad signal
     freqs, gamma = sp.signal.periodogram(orig_padded, window=WINDOW_TYPE, return_onesided=False)
 
     #SNRpost(p, wk) = |X(p, wk)|^2 / gamma(p, wk)
@@ -109,7 +108,7 @@ def regeneration(orig_sig, reduced_sig, ro=0.5, NL="max"):
     G_harmo = SNR_harmo / (1 + SNR_harmo)
 
     #TODO: Is this S or X???
-    return sp.fftpack.ifft(G_harmo * X)
+    return np.abs(sp.fftpack.ifft(G_harmo * X))
 
 def wavwrite(filepath, data, sr, norm=True, dtype='int16'):
     if norm:
@@ -118,6 +117,35 @@ def wavwrite(filepath, data, sr, norm=True, dtype='int16'):
     data = data.astype(dtype)
     sp.io.wavfile.write(filepath, sr, data)
 
+def plt_spectrogram(X, win_length, hop_size, sample_rate, zoom_x=None, zoom_y=None, tick_labels='time-freq', filename="tmp", figsize=(16, 4)):
+    matplotlib.use('agg')
+    X = librosa.stft(X, win_length, hop_size)
+    Nf, Nt = np.shape(X)
+    X = 20 * np.log10(np.abs(X))
+    X = X[0:int(Nf / 2) + 1]
+    Nf = np.shape(X)[0]
+    times = (hop_size / float(sample_rate)) * np.arange(Nt)
+    freqs = (float(sample_rate) / win_length) * np.arange(Nf)
+    times_matrix, freqs_matrix = np.meshgrid(times, freqs)
+    plt.figure(figsize=figsize)
+    plt.title('Log magnitude spectrogram')
+    if tick_labels == 'bin-frame':
+        plt.pcolormesh(X)
+        plt.xlabel('Time-frame Number')
+        plt.ylabel('Frequency-bin Number')
+    else:
+        plt.pcolormesh(times_matrix, freqs_matrix, X)
+        plt.xlabel('Time (sec)')
+        plt.ylabel('Frequency (Hz)')
+    if zoom_x is None and zoom_y is None:
+        plt.axis('tight')
+    if zoom_x is not None:
+        plt.xlim(zoom_x)
+    if zoom_y is not None:
+        plt.ylim(zoom_y)
+    
+    path = filename + ".png"
+    plt.savefig(path)
 
 def wiener_filtering(clean_signal, filename):
     """
@@ -126,6 +154,7 @@ def wiener_filtering(clean_signal, filename):
     :param filename: string of the audio file name
     """
     noisy_signal = generate_noise(clean_signal)
+    plt_spectrogram(noisy_signal, WINDOW_LENGTH, HOP_SIZE, DEFAULT_SR, filename='noisy')
 
     write_name = filename.split(".")[0]
     new_path = "test_audio_noisy/" + write_name + "_noisy.wav"
@@ -139,8 +168,10 @@ def wiener_filtering(clean_signal, filename):
     signal_est_reconstruction = reconstruction(stft_noisy, signal_est_mag)
     new_path = "test_audio_reconstructed/" + write_name + "_reconstructed.wav"
     wavwrite(new_path, signal_est_reconstruction, DEFAULT_SR)
+    plt_spectrogram(signal_est_reconstruction, WINDOW_LENGTH, HOP_SIZE, DEFAULT_SR, filename='reconstructed')
 
     signal_est = regeneration(noisy_signal, signal_est_reconstruction)
+    plt_spectrogram(signal_est, WINDOW_LENGTH, HOP_SIZE, DEFAULT_SR, filename='regenerated')
 
     new_path = "test_audio_results/" + write_name + "_reduced.wav"
     wavwrite(new_path, np.abs(signal_est), DEFAULT_SR)
