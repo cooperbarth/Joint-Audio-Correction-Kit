@@ -1,4 +1,5 @@
-import numpy as np, scipy as sp
+import numpy as np
+from scipy.signal import istft
 
 WINDOW_TYPE = 'hamming'
 WINDOW_LENGTH = 2048
@@ -13,7 +14,7 @@ def reconstruction(stft_noisy, signal_est_mag):
     """
     phase_noisy = np.angle(stft_noisy)
     stft_signal_est = np.multiply(signal_est_mag, np.exp(1j * phase_noisy))
-    _, signal_est = sp.signal.istft(stft_signal_est, window=WINDOW_TYPE, nperseg=WINDOW_LENGTH,
+    _, signal_est = istft(stft_signal_est, window=WINDOW_TYPE, nperseg=WINDOW_LENGTH,
                                     noverlap=HOP_SIZE)
 
     return signal_est

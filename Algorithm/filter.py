@@ -1,5 +1,6 @@
-import numpy as np, scipy as sp, matplotlib.pyplot as plt, librosa, sys
+import numpy as np, scipy as sp, matplotlib.pyplot as plt, sys
 from pathlib import Path
+from librosa import load
 
 from generate_noise import generate_noise
 from denoising import denoising
@@ -27,17 +28,19 @@ def wiener_filtering(clean_signal, filename):
         clean_signal = clean_signal[:400000]
 
     plt_spectrogram(clean_signal, WINDOW_LENGTH, HOP_SIZE, DEFAULT_SR, filename='clean')
-
-    noisy_signal = generate_noise(clean_signal)
-    plt_spectrogram(noisy_signal, WINDOW_LENGTH, HOP_SIZE, DEFAULT_SR, filename='noisy')
-
     write_name = filename.split(".")[0]
-    new_path = "audio/test_audio_noisy/" + write_name + "_noisy.wav"
-    wavwrite(new_path, noisy_signal, DEFAULT_SR)
+
+    if '+' not in filename:
+        noisy_signal = generate_noise(clean_signal)
+        plt_spectrogram(noisy_signal, WINDOW_LENGTH, HOP_SIZE, DEFAULT_SR, filename='noisy')
+
+        new_path = "audio/test_audio_noisy/" + write_name + "_noisy.wav"
+        wavwrite(new_path, noisy_signal, DEFAULT_SR)
+    else:
+        noisy_signal = clean_signal.copy()
 
     _, _, stft_noisy = sp.signal.stft(noisy_signal, window=WINDOW_TYPE, nperseg=WINDOW_LENGTH,
-                                      noverlap=HOP_SIZE)
-
+                                    noverlap=HOP_SIZE)
     signal_est_mag = denoising(stft_noisy)
 
     signal_est_reconstruction = reconstruction(stft_noisy, signal_est_mag)
@@ -58,7 +61,7 @@ if __name__ == '__main__':
                 filename += ".wav"
             filepath = "audio/test_audio/" + filename
             try:
-                clean_signal, _ = librosa.load(filepath, sr=DEFAULT_SR)
+                clean_signal, _ = load(filepath, sr=DEFAULT_SR)
             except:
                 print(filename + " is not a valid file name.")
                 continue
@@ -66,5 +69,5 @@ if __name__ == '__main__':
     else:
         pathlist = Path("audio/test_audio").glob('**/*.wav')
         for filepath in pathlist:
-            clean_signal, _ = librosa.load(filepath, sr=DEFAULT_SR)
+            clean_signal, _ = load(filepath, sr=DEFAULT_SR)
             wiener_filtering(clean_signal, str(filepath).split("/")[1])
