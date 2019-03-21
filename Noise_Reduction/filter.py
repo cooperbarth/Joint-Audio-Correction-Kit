@@ -13,7 +13,7 @@ from wavwrite import wavwrite
 
 np.seterr(divide='ignore', invalid='ignore')
 
-SIGNAL_LENGTH = 400000
+MAX_SIGNAL_LENGTH = 400000
 
 def wiener_filtering(clean_signal, filename, audio_sr):
     """
@@ -21,8 +21,8 @@ def wiener_filtering(clean_signal, filename, audio_sr):
     :param clean_signal: 1D numpy array containing the signal of a clean audio file
     :param filename: string of the audio file name
     """
-    if len(clean_signal) > SIGNAL_LENGTH:
-        clean_signal = clean_signal[:SIGNAL_LENGTH]
+    if len(clean_signal) > MAX_SIGNAL_LENGTH:
+        clean_signal = clean_signal[:MAX_SIGNAL_LENGTH]
 
     write_name = filename.split(".")[0]
 
