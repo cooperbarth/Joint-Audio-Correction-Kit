@@ -1,6 +1,6 @@
 import numpy as np
 
-SNR = 15
+SNR = 20
 DEFAULT_SR = 44100
 
 def generate_noise(signal, snr_desired=SNR, sr=DEFAULT_SR):

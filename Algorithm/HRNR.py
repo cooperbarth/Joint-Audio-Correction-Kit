@@ -3,16 +3,32 @@ import numpy as np, librosa
 WINDOW_LENGTH = 2048
 HOP_SIZE = 1024
 
-def HRNR(noisy_stft, speech_spectrum, TSNR_gains, noise_estimation):
-    harmo_spectrum = speech_spectrum.copy()
-    harmo_spectrum[harmo_spectrum < 0] = 0
+def HRNR(noisy_stft, TSNR_spectrum, TSNR_gains, noise_estimation, NL="max"):
+    """
+    Reconstructs the signal by re-adding phase components to the magnitude estimate
+    :param noisy_stft: stft of original noisy signal
+    :param TSNR_spectrum: clean stft returned by TSNR
+    :param TSNR_gains: gains of each stft frame returned by TSNR
+    :param noise_estimation: noise estimation average based on first n frames of noisy signal
+    :param NL: string representing the non-linear function to be applied to TSNR_spectrum
+    :return:
+        signal_output: stft of signal after TSNR modification
+        TSNR_gains: ndarray containing gain for each bin in signal_output
+    """
 
-    num_frames = speech_spectrum.shape[1]
+    #applying non-linear function to TSNR_spectrum
+    harmo_spectrum = TSNR_spectrum.copy()
+    if NL == "abs":
+        harmo_spectrum = np.abs(harmo_spectrum)
+    else:
+        harmo_spectrum[harmo_spectrum < 0] = 0
 
-    output_spectrum = np.zeros(speech_spectrum.shape, dtype=complex)
+    #initialization
+    num_frames = TSNR_spectrum.shape[1]
+    output_spectrum = np.zeros(TSNR_spectrum.shape, dtype=complex)
 
     for frame_number in range(num_frames):
-        noisy_frame = np.abs(speech_spectrum[:, frame_number])
+        noisy_frame = np.abs(TSNR_spectrum[:, frame_number])
         harmo_frame = np.abs(harmo_spectrum[:, frame_number])
         gain_TSNR = TSNR_gains[:, frame_number]
 

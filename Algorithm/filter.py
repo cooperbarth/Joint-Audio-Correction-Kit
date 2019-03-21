@@ -13,9 +13,6 @@ from wavwrite import wavwrite
 np.seterr(divide='ignore', invalid='ignore')
 
 DEFAULT_SR = 44100
-WINDOW_TYPE = 'hamming'
-WINDOW_LENGTH = 2048
-HOP_SIZE = 1024
 
 def wiener_filtering(clean_signal, filename):
     """
@@ -36,9 +33,7 @@ def wiener_filtering(clean_signal, filename):
     else:
         noisy_signal = clean_signal.copy()
 
-    stft_noisy = librosa.stft(noisy_signal, win_length=WINDOW_LENGTH, hop_length=HOP_SIZE)
-
-    DD_gains, noise_est = DD(stft_noisy)
+    stft_noisy, DD_gains, noise_est = DD(noisy_signal)
     TSNR_sig, TSNR_gains = TSNR(stft_noisy, DD_gains, noise_est)
     signal_est = HRNR(stft_noisy, TSNR_sig, TSNR_gains, noise_est)
 
