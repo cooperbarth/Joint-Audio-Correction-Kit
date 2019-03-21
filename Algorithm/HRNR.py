@@ -32,12 +32,13 @@ def HRNR(noisy_stft, TSNR_spectrum, TSNR_gains, noise_estimation, NL="max"):
         harmo_frame = np.abs(harmo_spectrum[:, frame_number])
         gain_TSNR = TSNR_gains[:, frame_number]
 
+        #calculate prior SNR
         A = gain_TSNR * (np.abs(noisy_frame) ** 2)
         B = (1 - gain_TSNR) * (np.abs(harmo_frame) ** 2)
-
         SNR_prior = (A + B) / noise_estimation
-        HRNR_gain = np.divide(SNR_prior, SNR_prior + 1)
 
+        #calculate new gain and apply
+        HRNR_gain = np.divide(SNR_prior, SNR_prior + 1)
         output_spectrum[:, frame_number] = noisy_stft[:, frame_number] * HRNR_gain
 
     return librosa.istft(output_spectrum, hop_length=HOP_SIZE, win_length=WINDOW_LENGTH)
