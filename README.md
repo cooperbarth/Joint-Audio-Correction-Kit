@@ -43,3 +43,6 @@ A modern solution for audio noise reduction and active noise cancellation.
 7. open `index.html`
 
 Created by Cooper Barth, Andrew Finke, and Jack Wiig for EECS 352 - Machine Perception of Music and Audio @ Northwestern University
+
+
+https://cooperbarth.github.io/Joint-Audio-Correction-Kit/
