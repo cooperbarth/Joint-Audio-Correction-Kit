@@ -1,4 +1,4 @@
-import numpy as np, scipy as sp, matplotlib.pyplot as plt, sys, librosa
+import numpy as np, scipy as sp, sys
 from pathlib import Path
 from librosa import load
 
@@ -13,6 +13,7 @@ from wavwrite import wavwrite
 np.seterr(divide='ignore', invalid='ignore')
 
 DEFAULT_SR = 44100
+SIGNAL_LENGTH = 400000
 
 def wiener_filtering(clean_signal, filename):
     """
@@ -20,8 +21,8 @@ def wiener_filtering(clean_signal, filename):
     :param clean_signal: 1D numpy array containing the signal of a clean audio file
     :param filename: string of the audio file name
     """
-    if len(clean_signal) > 400000:
-        clean_signal = clean_signal[:400000]
+    if len(clean_signal) > SIGNAL_LENGTH:
+        clean_signal = clean_signal[:SIGNAL_LENGTH]
 
     write_name = filename.split(".")[0]
 
