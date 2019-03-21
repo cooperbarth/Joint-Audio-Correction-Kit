@@ -13,8 +13,11 @@ body {
 }
 
 h2 {
-  font-size: 30px;
+  font-size: 25px;
   text-align: center;
+  font-weight: 500;
+  padding-left: 120px;
+  padding-right: 120px;
 }
 
 h3 {
@@ -27,9 +30,9 @@ h3 {
   height: 10px;
 }
 
-img {
+/* img {
   width: 100%;
-}
+} */
 table {
   table-layout: fixed;
 }
@@ -41,5 +44,47 @@ table {
   height: 4px;
   weight: 4px;
   border-radius: 4px;
-  background-color: rgba(154, 154, 154, 0.5);
+  background-color: rgba(54, 54, 54, 0.85);
+}
+
+#divider-results-images {
+  height: 80px;
+}
+
+
+
+/* Image Comparision */
+/* All image comparision code from https://www.w3schools.com/howto/howto_js_image_comparison.asp */
+
+* {box-sizing: border-box;}
+
+.img-comp-container {
+  position: relative;
+  height: 200px; /*should be the same height as the images*/
+}
+
+.img-comp-img {
+  position: absolute;
+  width: auto;
+  height: auto;
+  overflow:hidden;
+}
+
+.img-comp-img img {
+  display:block;
+  vertical-align:middle;
+}
+
+.img-comp-slider {
+  position: absolute;
+  z-index:9;
+  cursor: ew-resize;
+  /*set the appearance of the slider:*/
+  width: 5px;
+  height: 500px;
+  background-color: rgb(54, 54, 54);
+}
+
+#fake-table-data {
+  width: 1000px;
 }

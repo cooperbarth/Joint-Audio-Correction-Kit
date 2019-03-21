@@ -1,4 +1,5 @@
-import numpy as np, sys
+import numpy as np
+import sys
 from librosa import load, effects
 
 np.seterr(divide='ignore', invalid='ignore')
@@ -9,6 +10,7 @@ from HRNR import HRNR
 from highpass import highpass
 
 MAX_SIGNAL_LENGTH = 400000
+
 
 def this_is_going_to_totally_work_right(signal, sample_rate):
     if len(signal) > MAX_SIGNAL_LENGTH:
