@@ -44,8 +44,8 @@ def process_request(request):
         app.logger.error("process_request: no file")
         return
 
-    if not file.filename.endswith(".mp3"):
-        app.logger.error("not mp3")
+    if not file.filename.endswith(".wav"):
+        app.logger.error("not wav")
         return
 
     filename = secure_filename(file.filename).split(".")[0]

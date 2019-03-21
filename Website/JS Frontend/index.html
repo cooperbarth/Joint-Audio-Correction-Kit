@@ -22,33 +22,44 @@
         </tr>
       </tbody>
     </table>
+    </form>
     <div id="divider-results"> </div>
-    <table width=100%>
-    <tbody>
+    <div id="results">
+    <table align="center">
+      <tbody>
         <tr>
-          <td>
-            <h2>Before</h2>
-            <img id="before-image" src="./09_Star_Tours.mp3.png"></img>
-            <audio controls>
-              <source id="before-audio" src="" type="audio/mp3">
-            </audio>
-          </td>
-
+          <td><h2>Before</h2></td>
+          <td><h2>After</h2></td>
         </tr>
         <tr>
           <td>
-            <h2>After</h2>
-            <img id="after-image" src="./09_Star_Tours.mp3.png"></img>
-            <audio controls>
-              <source id="after-audio" src="" type="audio/mp3">
-            </audio>
+            <audio controls><source id="before-audio" src="" type="audio/mp3"></audio>
+          </td>
+          <td>
+            <audio controls><source id="after-audio" src="" type="audio/mp3"></audio>
           </td>
         </tr>
       </tbody>
     </table>
-  </form>
-
-
+    <div id="divider-results-images"> </div>
+    <table align="center">
+      <tbody>
+        <tr>
+          <td id="fake-table-data">
+            <div class="img-comp-container">
+              <div class="img-comp-img">
+                <img id="after-image" src="./09_Star_Tours.mp3.png" width="1000" height="500">
+              </div>
+              <div class="img-comp-img img-comp-overlay">
+                <img id="before-image" src="./09_Star_Tours.png" width="1000" height="500">
+              </div>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
   <script src="index.js"></script>
+  <script>initComparisons()</script>
 </body>
 </html>

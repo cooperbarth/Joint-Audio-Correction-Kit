@@ -20,7 +20,7 @@ def plot_audio(x, sr, filename="tmp", figsize=(16, 4)):
     return path
 
 
-def plt_spectrogram(X, win_length, hop_size, sample_rate, zoom_x=None, zoom_y=None, tick_labels='time-freq', filename="tmp", figsize=(16, 4)):
+def plt_spectrogram(X, win_length, hop_size, sample_rate, zoom_x=None, zoom_y=None, tick_labels='time-freq', filename="tmp", figsize=(10, 5)):
     """
     Plots the log magnitude spectrogram.
 
