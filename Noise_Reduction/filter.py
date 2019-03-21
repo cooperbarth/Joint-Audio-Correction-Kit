@@ -12,25 +12,24 @@ from wavwrite import wavwrite
 
 np.seterr(divide='ignore', invalid='ignore')
 
-DEFAULT_SR = 44100
 SIGNAL_LENGTH = 400000
 
-def wiener_filtering(clean_signal, filename):
+def wiener_filtering(clean_signal, filename, clean_sr):
     """
     Performs Wiener Filtering on a file located at filepath
     :param clean_signal: 1D numpy array containing the signal of a clean audio file
     :param filename: string of the audio file name
     """
     if len(clean_signal) > SIGNAL_LENGTH:
-        clean_signal = clean_signal[:SIGNAL_LENGTH]
+        clean_signal = clean_signal[:SIGNAL_LENGTH * 10]
 
     write_name = filename.split(".")[0]
 
     if '+' not in filename:
-        noisy_signal = generate_noise(clean_signal)
+        noisy_signal = generate_noise(clean_signal, sr=clean_sr)
 
         new_path = "audio/test_audio_noisy/" + write_name + "_noisy.wav"
-        wavwrite(new_path, noisy_signal, DEFAULT_SR)
+        wavwrite(new_path, noisy_signal, clean_sr)
     else:
         noisy_signal = clean_signal.copy()
 
@@ -39,7 +38,7 @@ def wiener_filtering(clean_signal, filename):
     signal_est = HRNR(stft_noisy, TSNR_sig, TSNR_gains, noise_est)
 
     new_path = "audio/test_audio_results/" + write_name + "_reduced.wav"
-    wavwrite(new_path, signal_est, DEFAULT_SR)
+    wavwrite(new_path, signal_est, clean_sr)
 
 if __name__ == '__main__':
     if len(sys.argv) > 1:
@@ -48,17 +47,17 @@ if __name__ == '__main__':
                 filename += ".wav"
             filepath = "audio/test_audio/" + filename
             try:
-                clean_signal, _ = load(filepath, sr=DEFAULT_SR)
+                clean_signal, clean_sr = load(filepath, sr=None)
             except:
                 print(filename + " is not a valid file name.")
                 continue
-            wiener_filtering(clean_signal, filename)
+            wiener_filtering(clean_signal, filename, clean_sr)
     else:
         pathlist = Path("audio/test_audio").glob('**/*.wav')
         for filepath in pathlist:
             try:
-                clean_signal, _ = load(filepath, sr=DEFAULT_SR)
+                clean_signal, clean_sr = load(filepath, sr=None)
             except:
                 print(filename + " is not a valid file name.")
                 continue
-            wiener_filtering(clean_signal, str(filepath).split("/")[1])
+            wiener_filtering(clean_signal, str(filepath).split("/")[1], clean_sr)
