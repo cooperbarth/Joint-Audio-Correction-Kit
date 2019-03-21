@@ -41,14 +41,14 @@ def wiener_filtering(clean_signal, filename):
 
     _, _, stft_noisy = sp.signal.stft(noisy_signal, window=WINDOW_TYPE, nperseg=WINDOW_LENGTH,
                                     noverlap=HOP_SIZE)
-    signal_est_mag = denoising(stft_noisy)
+    signal_est_mag, gain = denoising(stft_noisy)
 
     signal_est_reconstruction = reconstruction(stft_noisy, signal_est_mag)
     new_path = "audio/test_audio_reconstructed/" + write_name + "_reconstructed.wav"
     wavwrite(new_path, signal_est_reconstruction, DEFAULT_SR)
     plt_spectrogram(signal_est_reconstruction, WINDOW_LENGTH, HOP_SIZE, DEFAULT_SR, filename='reconstructed')
 
-    signal_est = regeneration(noisy_signal, signal_est_reconstruction)
+    signal_est = regeneration(noisy_signal, signal_est_reconstruction, gain)
     plt_spectrogram(signal_est, WINDOW_LENGTH, HOP_SIZE, DEFAULT_SR, filename='regenerated')
 
     new_path = "audio/test_audio_results/" + write_name + "_reduced.wav"

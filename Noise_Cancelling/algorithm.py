@@ -36,7 +36,9 @@ while True:
     #update buffer with weighted average
     filter_weighted = filter_count * noise_filter
     filter_count += 1
+
     noise_filter = (filter_weighted + freq_input) / filter_count
+
     filter_inverse = -1 * noise_filter
 
     #multiplier should be inverse of buffer

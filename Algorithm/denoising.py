@@ -18,6 +18,7 @@ def denoising(stft_noisy, alpha=ALPHA, start_frame=START_FRAME):
     num_frames = stft_noisy.shape[1]
 
     signal_est_mag = np.zeros(stft_noisy.shape)
+    total_gain = []
 
     for frame_number in range(0, num_frames): #changed this from range(start_frame, end_frame)
         noisy_frame = np.abs(stft_noisy[:, frame_number])
@@ -29,4 +30,4 @@ def denoising(stft_noisy, alpha=ALPHA, start_frame=START_FRAME):
         filter_gain = np.divide(prior_snr, prior_snr + 1)
         signal_est_mag[:, frame_number] = np.multiply(filter_gain, noisy_frame)
 
-    return signal_est_mag
+    return signal_est_mag, np.asarray(total_gain)
