@@ -1,8 +1,9 @@
-'''Code inspired by:
+'''PyAudio use inspired by:
     https://gist.github.com/aflaxman/6300595
 '''
 
 import numpy as np, scipy.signal, pyaudio
+
 np.seterr(divide='ignore', invalid='ignore')
 
 WIDTH = 4
