@@ -56,5 +56,9 @@ if __name__ == '__main__':
     else:
         pathlist = Path("audio/test_audio").glob('**/*.wav')
         for filepath in pathlist:
-            clean_signal, _ = load(filepath, sr=DEFAULT_SR)
+            try:
+                clean_signal, _ = load(filepath, sr=DEFAULT_SR)
+            except:
+                print(filename + " is not a valid file name.")
+                continue
             wiener_filtering(clean_signal, str(filepath).split("/")[1])
