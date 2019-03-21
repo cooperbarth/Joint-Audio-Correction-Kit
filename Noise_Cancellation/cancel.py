@@ -21,7 +21,7 @@ stream = p.open(format=p.get_format_from_width(WIDTH),
                 output=True,
                 frames_per_buffer=CHUNK)
 
-noise_filter = np.fft.fft(np.random.randn(2*CHUNK))
+noise_filter = np.fft.fft(np.random.rand(2*CHUNK))
 filter_count = 0
 
 #every loop, update buffer and multiply input by inverse of buffer
