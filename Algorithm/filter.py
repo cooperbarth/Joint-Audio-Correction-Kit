@@ -3,13 +3,12 @@ from pathlib import Path
 from librosa import load
 
 from generate_noise import generate_noise
+from DD import DD
+from TSNR import TSNR
+from HRNR import HRNR
 
 sys.path.append('utility')
 from wavwrite import wavwrite
-
-from DD_TSNR_HRNR import DD
-from DD_TSNR_HRNR import TSNR
-from DD_TSNR_HRNR import HRNR
 
 np.seterr(divide='ignore', invalid='ignore')
 
