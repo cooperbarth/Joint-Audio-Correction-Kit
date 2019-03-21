@@ -1,4 +1,4 @@
-import numpy as np, scipy as sp, matplotlib.pyplot as plt, sys
+import numpy as np, scipy as sp, matplotlib.pyplot as plt, sys, librosa
 from pathlib import Path
 from librosa import load
 
@@ -10,6 +10,10 @@ from regeneration import regeneration
 sys.path.append('utility')
 from plt_spectrogram import plt_spectrogram
 from wavwrite import wavwrite
+
+from DD_TSNR_HRNR import DD
+from DD_TSNR_HRNR import TSNR
+from DD_TSNR_HRNR import HRNR
 
 np.seterr(divide='ignore', invalid='ignore')
 
@@ -39,9 +43,10 @@ def wiener_filtering(clean_signal, filename):
     else:
         noisy_signal = clean_signal.copy()
 
-    _, _, stft_noisy = sp.signal.stft(noisy_signal, window=WINDOW_TYPE, nperseg=WINDOW_LENGTH,
-                                    noverlap=HOP_SIZE)
-    signal_est_mag, gain = denoising(stft_noisy)
+    stft_noisy = librosa.stft(noisy_signal, win_length=WINDOW_LENGTH, hop_length=HOP_SIZE)
+
+
+    '''signal_est_mag, gain = denoising(stft_noisy)
 
     signal_est_reconstruction = reconstruction(stft_noisy, signal_est_mag)
     new_path = "audio/test_audio_reconstructed/" + write_name + "_reconstructed.wav"
@@ -49,7 +54,11 @@ def wiener_filtering(clean_signal, filename):
     plt_spectrogram(signal_est_reconstruction, WINDOW_LENGTH, HOP_SIZE, DEFAULT_SR, filename='reconstructed')
 
     signal_est = regeneration(noisy_signal, signal_est_reconstruction, gain)
-    plt_spectrogram(signal_est, WINDOW_LENGTH, HOP_SIZE, DEFAULT_SR, filename='regenerated')
+    plt_spectrogram(signal_est, WINDOW_LENGTH, HOP_SIZE, DEFAULT_SR, filename='regenerated')'''
+
+    DD_gains, noise_est = DD(stft_noisy)
+    TSNR_sig, TSNR_gains = TSNR(stft_noisy, DD_gains, noise_est)
+    signal_est = HRNR(stft_noisy, TSNR_sig, TSNR_gains, noise_est)
 
     new_path = "audio/test_audio_results/" + write_name + "_reduced.wav"
     wavwrite(new_path, np.abs(signal_est), DEFAULT_SR)
