@@ -1,6 +1,6 @@
 import numpy as np, scipy as sp, librosa
 
-#GOD PAPER?: https://pdfs.semanticscholar.org/8077/e1edd010261398f20719eb1bdc17d19ae678.pdf
+#GOOD PAPER?: https://pdfs.semanticscholar.org/8077/e1edd010261398f20719eb1bdc17d19ae678.pdf
 
 ALPHA = 0.98
 START_FRAME = 12
@@ -18,20 +18,20 @@ def DD(stft_noisy, alpha=ALPHA, start_frame=START_FRAME):
     num_frames = stft_noisy.shape[1]
 
     signal_est_mag = np.zeros(stft_noisy.shape)
-    signal_gains = []
+    total_gain = []
 
-    for frame_number in range(0, num_frames): #changed this from range(start_frame, end_frame)
+    for frame_number in range(0, num_frames):
         noisy_frame = np.abs(stft_noisy[:, frame_number])
         current_post_snr = np.divide(np.square(noisy_frame), noise_estimation)
         prior_snr = (alpha * np.square(filter_gain) + last_post_snr) * \
                     (last_post_snr + (1 - alpha) * np.amax(current_post_snr - 1))
+
         last_post_snr = current_post_snr
+        filter_gain = np.divide(prior_snr, prior_snr + 1)
+        signal_est_mag[:, frame_number] = np.multiply(filter_gain, noisy_frame)
+        total_gain.append(filter_gain)
 
-        current_gain = np.divide(prior_snr, prior_snr + 1)
-        filter_gain = current_gain
-        signal_gains.append(current_gain)
-
-    return np.asarray(signal_gains).T, noise_estimation
+    return np.asarray(total_gain).T, noise_estimation
 
 def TSNR(noisy_stft, signal_gains, noise_estimation, alpha=ALPHA):
     """
@@ -46,11 +46,11 @@ def TSNR(noisy_stft, signal_gains, noise_estimation, alpha=ALPHA):
     signal_output = np.zeros(noisy_stft.shape, dtype=complex)
     TSNR_gains = []
 
-    for frame_number in range(num_frames): #changed this from range(start_frame, end_frame)
+    for frame_number in range(num_frames):
         noisy_frame = np.abs(noisy_stft[:, frame_number])
 
         #Calculating SNR_prior for current frame
-        numerator = (signal_gains[:, frame_number] * noisy_stft[:, frame_number]) ** 2
+        numerator = (signal_gains[:, frame_number] * noisy_frame) ** 2
         prior_SNR = numerator / noise_estimation
 
         #Calculating TSNR filter_gain for current frame
