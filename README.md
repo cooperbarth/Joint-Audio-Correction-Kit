@@ -1,14 +1,13 @@
 # Joint Audio Correction Kit (J.A.C.K.)
 A modern solution for audio noise reduction and active noise cancellation. Created by Cooper Barth (coop10101@gmail.com), Andrew Finke, and Jack Wiig for EECS 352 - Machine Perception of Music and Audio @ Northwestern University with Professor Pardo.
 
-
-![marketing image]( "Marketing Image")
+![marketing image](https://github.com/cooperbarth/Joint-Audio-Correction-Kit/raw/master/Resources/MacBookPro.png)
 
 ## Motivation
 - Implement a useful feature from audio editing software
 - Understand noise reduction and how to isolate sources from a single sound
 - Explore potential alternatives to current implementations of noise reduction and cancellation
-https://github.com/cooperbarth/Joint-Audio-Correction-Kit/raw/master/Resources/MacBookPro.png
+
 ## Existing Approaches
 - Different algorithms are needed depending on the type of sound to be eliminated, such as wind, rain, and background conversation
 - Stationary noise, or noise that does not change in nature, is commonly removed using Wiener Filtering or Nonnegative Matrix Factorization.
