@@ -48,10 +48,8 @@ table {
 }
 
 #divider-results-images {
-  height: 80px;
+  height: 40px;
 }
-
-
 
 /* Image Comparision */
 /* All image comparision code from https://www.w3schools.com/howto/howto_js_image_comparison.asp */

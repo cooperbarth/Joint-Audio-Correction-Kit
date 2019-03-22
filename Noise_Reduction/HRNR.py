@@ -1,7 +1,9 @@
-import numpy as np, librosa
+import numpy as np
+import librosa
 
 WINDOW_LENGTH = 2048
 HOP_SIZE = 1024
+
 
 def HRNR(noisy_stft, TSNR_spectrum, TSNR_gains, noise_estimation, NL="max"):
     """
@@ -16,14 +18,14 @@ def HRNR(noisy_stft, TSNR_spectrum, TSNR_gains, noise_estimation, NL="max"):
         TSNR_gains: ndarray containing gain for each bin in signal_output
     """
 
-    #applying non-linear function to TSNR_spectrum
+    # applying non-linear function to TSNR_spectrum
     harmo_spectrum = TSNR_spectrum.copy()
     if NL == "abs":
         harmo_spectrum = np.abs(harmo_spectrum)
     else:
-        harmo_spectrum[harmo_spectrum < 0] = 0
+        harmo_spectrum[harmo_spectrum <= 0] = 0.01
 
-    #initialization
+    # initialization
     num_frames = TSNR_spectrum.shape[1]
     output_spectrum = np.zeros(TSNR_spectrum.shape, dtype=complex)
 
@@ -32,13 +34,14 @@ def HRNR(noisy_stft, TSNR_spectrum, TSNR_gains, noise_estimation, NL="max"):
         harmo_frame = np.abs(harmo_spectrum[:, frame_number])
         gain_TSNR = TSNR_gains[:, frame_number]
 
-        #calculate prior SNR
+        # calculate prior SNR
         A = gain_TSNR * (np.abs(noisy_frame) ** 2)
         B = (1 - gain_TSNR) * (np.abs(harmo_frame) ** 2)
         SNR_prior = (A + B) / noise_estimation
 
-        #calculate new gain and apply
+        # calculate new gain and apply
         HRNR_gain = np.divide(SNR_prior, SNR_prior + 1)
-        output_spectrum[:, frame_number] = noisy_stft[:, frame_number] * HRNR_gain
+        output_spectrum[:, frame_number] = noisy_stft[:,
+                                                      frame_number] * HRNR_gain
 
     return librosa.istft(output_spectrum, hop_length=HOP_SIZE, win_length=WINDOW_LENGTH)
