@@ -9,12 +9,7 @@ from TSNR import TSNR
 from HRNR import HRNR
 from highpass import highpass
 
-MAX_SIGNAL_LENGTH = 400000
-
-
 def noise_filter(signal, sample_rate):
-    if len(signal) > MAX_SIGNAL_LENGTH:
-        signal = signal[:MAX_SIGNAL_LENGTH]
 
     stft_noisy, DD_gains, noise_est = DD(signal)
     TSNR_sig, TSNR_gains = TSNR(stft_noisy, DD_gains, noise_est)
