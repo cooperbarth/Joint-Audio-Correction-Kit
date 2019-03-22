@@ -23,7 +23,7 @@ A modern solution for audio noise reduction and active noise cancellation. Creat
 ## Approach
 - To filter the noisy audio, an adaptive Wiener filtering method was implemented.
 - The filter utilizes a two-step noise removal and signal repair method.
-![approach](https://github.com/cooperbarth/Joint-Audio-Correction-Kit/raw/master/Resources/buble_with_noise.wav "Audio with noise")
+![approach](https://github.com/cooperbarth/Joint-Audio-Correction-Kit/raw/master/Resources/Approach.png "Approach")
 
 ## Testing
 (specifically, how do we know it's good)
