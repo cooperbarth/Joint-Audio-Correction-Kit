@@ -4,9 +4,7 @@ A modern solution for audio noise reduction and active noise cancellation. Creat
 ![marketing image](https://github.com/cooperbarth/Joint-Audio-Correction-Kit/raw/master/Resources/MacBookPro.png)
 
 ## Motivation
-- Implement a useful feature from audio editing software
-- Understand noise reduction and how to isolate sources from a single sound
-- Explore potential alternatives to current implementations of noise reduction and cancellation
+ Our goal was to implement a useful feature from audio editing software. Additionaly, we sought to better understand how noise reduction was implemented and how to isolate sources from a single sound. We also wanted to explore potential alternatives to current implementations of noise reduction and cancellation.
 
 ## Background
   Currently, different algorithms are needed depending on the type of sound to be eliminated, such as wind, rain, and background conversation. Stationary noise, or noise that does not change in nature, is commonly removed using Wiener Filtering or Nonnegative Matrix Factorization. One approach to perform this task is to use noise estimate created from a portion of the signal containing only background. The effectiveness of an algorithm that attempts to reduce noise is based on how it maximizes a sample-to-noise ratio, SNR, where the signal is compared to the noise estimate after the signal has been noise reduced.
