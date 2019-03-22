@@ -10,6 +10,7 @@ from highpass import highpass
 
 sys.path.append('utility')
 from wavwrite import wavwrite
+from snr import snr
 
 np.seterr(divide='ignore', invalid='ignore')
 
@@ -39,6 +40,8 @@ def wiener_filtering(clean_signal, filename, audio_sr):
     signal_est = HRNR(stft_noisy, TSNR_sig, TSNR_gains, noise_est)
     signal_est = highpass(signal_est, audio_sr)
 
+    if '+' not in filename:
+        snr(signal_est, clean_signal)
     new_path = "audio/test_audio_results/" + write_name + "_reduced.wav"
     wavwrite(new_path, signal_est, audio_sr)
 

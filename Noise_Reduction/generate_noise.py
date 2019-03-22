@@ -3,6 +3,7 @@ import numpy as np
 SNR = 15
 DEFAULT_SR = 44100
 
+
 def generate_noise(signal, snr_desired=SNR, sr=DEFAULT_SR):
     """
     Applies background noise to a clean track
