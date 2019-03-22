@@ -2,13 +2,13 @@
 A modern solution for audio noise reduction and active noise cancellation. Created by Cooper Barth (coop10101@gmail.com), Andrew Finke, and Jack Wiig for EECS 352 - Machine Perception of Music and Audio @ Northwestern University with Professor Pardo.
 
 
-![marketing image](https://github.com/cooperbarth/Joint-Audio-Correction-Kit/raw/master/Images/MacBookPro.png "Marketing Image")
+![marketing image]( "Marketing Image")
 
 ## Motivation
 - Implement a useful feature from audio editing software
 - Understand noise reduction and how to isolate sources from a single sound
 - Explore potential alternatives to current implementations of noise reduction and cancellation
-
+https://github.com/cooperbarth/Joint-Audio-Correction-Kit/raw/master/Resources/MacBookPro.png
 ## Existing Approaches
 - Different algorithms are needed depending on the type of sound to be eliminated, such as wind, rain, and background conversation
 - Stationary noise, or noise that does not change in nature, is commonly removed using Wiener Filtering or Nonnegative Matrix Factorization.
@@ -24,7 +24,7 @@ A modern solution for audio noise reduction and active noise cancellation. Creat
 ## Approach
 - To filter the noisy audio, an adaptive Wiener filtering method was implemented.
 - The filter utilizes a two-step noise removal and signal repair method.
-![approach](https://github.com/cooperbarth/Joint-Audio-Correction-Kit/raw/master/Images/Approach.png "Approach")
+![approach](https://github.com/cooperbarth/Joint-Audio-Correction-Kit/raw/master/Resources/buble_with_noise.wav "Audio with noise")
 
 ## Testing
 (specifically, how do we know it's good)
@@ -32,10 +32,12 @@ A modern solution for audio noise reduction and active noise cancellation. Creat
 ## Results
 
 ### Before:
-![before](https://github.com/cooperbarth/Joint-Audio-Correction-Kit/raw/master/Images/before.png "before")
+[Initial Audio](https://github.com/cooperbarth/Joint-Audio-Correction-Kit/raw/master/Resources/buble_with_noise.wav)
+![before](https://github.com/cooperbarth/Joint-Audio-Correction-Kit/raw/master/Resources/before.png "before")
 
 ### After:
-![after](https://github.com/cooperbarth/Joint-Audio-Correction-Kit/raw/master/Images/after.png "after")
+[Processed Audio](https://github.com/cooperbarth/Joint-Audio-Correction-Kit/raw/master/Resources/buble_without_noise.wav)
+![after](https://github.com/cooperbarth/Joint-Audio-Correction-Kit/raw/master/Resources/after.png "after")
 
 ## Installation Instructions
 1. git clone `https://github.com/cooperbarth/Joint-Audio-Correction-Kit`
