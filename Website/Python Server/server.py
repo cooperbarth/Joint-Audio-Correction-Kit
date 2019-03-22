@@ -6,7 +6,7 @@ import config
 from flask import Flask, request, redirect, send_file, jsonify
 from plotting import plot_audio, plt_spectrogram
 
-from placeholder import this_is_going_to_totally_work_right
+from noise_filter import noise_filter
 from save_audio import wavwrite, process_request
 
 app = Flask(__name__)
@@ -33,7 +33,6 @@ def add_header(r):
 
 @app.route('/api/data/<filename>', methods=['GET'])
 def fetch_file(filename):
-    app.logger.info("carrying the team x 2")
     app.logger.info("grabbing " + str(filename))
     return send_file(config.API_TEMP_DIRECTORY + filename)
 
@@ -53,7 +52,7 @@ def file_denoiser():
         sample_rate,
         filename=filename)
 
-    denoised_signal = this_is_going_to_totally_work_right(signal, sample_rate)
+    denoised_signal = noise_filter(signal, sample_rate)
 
     new_spectogram_path = plt_spectrogram(
         denoised_signal,
