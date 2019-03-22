@@ -16,20 +16,18 @@ A modern solution for audio noise reduction and active noise cancellation. Creat
   To filter the noisy audio, we choose to use an adaptive Wiener filtering method to reduce the noise in our source audio tracks. The filter utilizes a two-step noise removal and signal repair method, as outlined in the following figure:
 ![approach](https://github.com/cooperbarth/Joint-Audio-Correction-Kit/raw/master/Resources/Approach.png "Approach")
 
-## Testing
-(specifically, how do we know it's good)
-
-## Results
+## Testing and Results
+ The algorithm was tested on dozens of audio files. In each case, random noise was added to a clean audio file and then removed successfully as perceived by the human ear. The algorithm has two major issues. At low initial SNR values, musical noise is still present in the signal. We have taken approaches to reduce this, but more steps must be taken to completely eliminate it. In certain signals, there is some slight distortion caused by the high-pass filter and TSNR that HRNR doesn’t fix. This could be improved by updating the algorithm to focus on this issue.
 
 ### Before:
 [Initial Audio](https://github.com/cooperbarth/Joint-Audio-Correction-Kit/raw/master/Resources/buble_with_noise.wav)
 ![before](https://github.com/cooperbarth/Joint-Audio-Correction-Kit/raw/master/Resources/before.png "before")
-- Some text explaining this
+- Audio Signal with Stationary Noise
 
 ### After:
 [Processed Audio](https://github.com/cooperbarth/Joint-Audio-Correction-Kit/raw/master/Resources/buble_without_noise.wav)
 ![after](https://github.com/cooperbarth/Joint-Audio-Correction-Kit/raw/master/Resources/after.png "after")
-- Some text explaining this
+- Denoised Audio Signal
 
 ## Installation Instructions
 1. git clone `https://github.com/cooperbarth/Joint-Audio-Correction-Kit`
