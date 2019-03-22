@@ -31,10 +31,10 @@ A modern solution for audio noise reduction and active noise cancellation.
 ## Results
 (what are we seeing using our tool)
 
-Before:
+### Before:
 ![before](https://github.com/cooperbarth/Joint-Audio-Correction-Kit/raw/master/Images/before.png "before")
 
-After:
+### After:
 ![after](https://github.com/cooperbarth/Joint-Audio-Correction-Kit/raw/master/Images/after.png "after")
 
 ## Installation Instructions
