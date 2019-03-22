@@ -4,6 +4,7 @@ from pysndfx import AudioEffectsChain
 SLOPE = 0.9
 THRESHOLD = 10
 
+
 def highpass(sig, sr, high_thresh=THRESHOLD):
     """
     Passes signal through a highpass filter
