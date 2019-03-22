@@ -1,29 +1,29 @@
-[this will be rendered as the github pages site]
-- https://cooperbarth.github.io/Joint-Audio-Correction-Kit/
-
-
-[start]
-
-
 # Joint Audio Correction Kit (J.A.C.K.)
 A modern solution for audio noise reduction and active noise cancellation.
 
------
-- lets try to keep / reuse as much as possible from poster
-- https://docs.google.com/presentation/d/12OGixwVv7USpRMx9wa2psPgSEr8uT4t8wtgvAIgYTyo/edit#slide=id.p1
-
+![marketing image](https://github.com/cooperbarth/Joint-Audio-Correction-Kit/raw/master/Images/MacBookPro.png "Marketing Image")
 
 ## Motivation
-(why are we doing this)
+- Implement a useful feature from audio editing software
+- Understand noise reduction and how to isolate sources from a single sound
+- Explore potential alternatives to current implementations of noise reduction and cancellation
 
 ## Existing Approaches
-(how are others doing this)
+- Different algorithms are needed depending on the type of sound to be eliminated, such as wind, rain, and background conversation
+- Stationary noise, or noise that does not change in nature, is commonly removed using Wiener Filtering or Nonnegative Matrix Factorization.
+- A noise estimate can be created from a portion of the signal containing only background.
+- Effectiveness of an algorithm is based on how it maximizes a sample-to-noise ratio, SNR, where the signal is compared to the noise estimate after the signal has been noise reduced
 
 ## Obstacles
-(why might this not work)
+- Preserving the original signal quality so speech is easily understandable
+- Properly identifying the background noise
+- Implementing an algorithm that works for most examples of the selected noise type
+- Noise artifacts after completing noise reduction
 
 ## Approach
-(conceptually, how are we doing this)
+- To filter the noisy audio, an adaptive Wiener filtering method was implemented.
+- The filter utilizes a two-step noise removal and signal repair method.
+![approach](https://github.com/cooperbarth/Joint-Audio-Correction-Kit/raw/master/Images/Approach.png "Approach")
 
 ## System Details
 (specifically, how are we doing this)
@@ -31,8 +31,11 @@ A modern solution for audio noise reduction and active noise cancellation.
 ## Results
 (what are we seeing using our tool)
 
+Before:
+![before](https://github.com/cooperbarth/Joint-Audio-Correction-Kit/raw/master/Images/before.png "before")
 
------ [all above should be like poster]
+After:
+![after](https://github.com/cooperbarth/Joint-Audio-Correction-Kit/raw/master/Images/after.png "after")
 
 ## Installation Instructions
 1. git clone `https://github.com/cooperbarth/Joint-Audio-Correction-Kit`
