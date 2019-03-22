@@ -25,11 +25,10 @@ A modern solution for audio noise reduction and active noise cancellation.
 - The filter utilizes a two-step noise removal and signal repair method.
 ![approach](https://github.com/cooperbarth/Joint-Audio-Correction-Kit/raw/master/Images/Approach.png "Approach")
 
-## System Details
-(specifically, how are we doing this)
+## Testing
+(specifically, how do we know it's good)
 
 ## Results
-(what are we seeing using our tool)
 
 ### Before:
 ![before](https://github.com/cooperbarth/Joint-Audio-Correction-Kit/raw/master/Images/before.png "before")
