@@ -8,21 +8,14 @@ A modern solution for audio noise reduction and active noise cancellation. Creat
 - Understand noise reduction and how to isolate sources from a single sound
 - Explore potential alternatives to current implementations of noise reduction and cancellation
 
-## Existing Approaches
-- Different algorithms are needed depending on the type of sound to be eliminated, such as wind, rain, and background conversation
-- Stationary noise, or noise that does not change in nature, is commonly removed using Wiener Filtering or Nonnegative Matrix Factorization.
-- A noise estimate can be created from a portion of the signal containing only background.
-- Effectiveness of an algorithm is based on how it maximizes a sample-to-noise ratio, SNR, where the signal is compared to the noise estimate after the signal has been noise reduced
+## Background
+  Currently, different algorithms are needed depending on the type of sound to be eliminated, such as wind, rain, and background conversation. Stationary noise, or noise that does not change in nature, is commonly removed using Wiener Filtering or Nonnegative Matrix Factorization. One approach to perform this task is to use noise estimate created from a portion of the signal containing only background. The effectiveness of an algorithm that attempts to reduce noise is based on how it maximizes a sample-to-noise ratio, SNR, where the signal is compared to the noise estimate after the signal has been noise reduced.
 
 ## Obstacles
-- Preserving the original signal quality so speech is easily understandable
-- Properly identifying the background noise
-- Implementing an algorithm that works for most examples of the selected noise type
-- Noise artifacts after completing noise reduction
+  Removing noise without the original source files presents numerous obstacles. Firstly, preserving the original signal quality so speech is easily understandable is one such challenge. Additionally, properly identifying the background noise is key as an improper classification could lead to the source signal being removed or not a sufficiently level of noise reduced. Because of this, implementing an algorithm that works for most examples of the selected noise type is a difficult undertaking as there are many different types of noise. Using an algorithm designed for a different type of noise than the one present in the input source file could lead to sporadic results. Finally, after completing noise reduction, noise artifacts may still be left over in the output track.
 
 ## Approach
-- To filter the noisy audio, an adaptive Wiener filtering method was implemented.
-- The filter utilizes a two-step noise removal and signal repair method.
+  To filter the noisy audio, we choose to use an adaptive Wiener filtering method to reduce the noise in our source audio tracks. The filter utilizes a two-step noise removal and signal repair method, as outlined in the following figure:
 ![approach](https://github.com/cooperbarth/Joint-Audio-Correction-Kit/raw/master/Resources/Approach.png "Approach")
 
 ## Testing
@@ -33,10 +26,12 @@ A modern solution for audio noise reduction and active noise cancellation. Creat
 ### Before:
 [Initial Audio](https://github.com/cooperbarth/Joint-Audio-Correction-Kit/raw/master/Resources/buble_with_noise.wav)
 ![before](https://github.com/cooperbarth/Joint-Audio-Correction-Kit/raw/master/Resources/before.png "before")
+- Some text explaining this
 
 ### After:
 [Processed Audio](https://github.com/cooperbarth/Joint-Audio-Correction-Kit/raw/master/Resources/buble_without_noise.wav)
 ![after](https://github.com/cooperbarth/Joint-Audio-Correction-Kit/raw/master/Resources/after.png "after")
+- Some text explaining this
 
 ## Installation Instructions
 1. git clone `https://github.com/cooperbarth/Joint-Audio-Correction-Kit`
