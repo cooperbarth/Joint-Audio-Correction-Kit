@@ -56,9 +56,17 @@ table {
 
 * {box-sizing: border-box;}
 
+img {
+  -webkit-user-drag: none;
+  -khtml-user-drag: none;
+  -moz-user-drag: none;
+  -o-user-drag: none;
+  user-drag: none;
+}
+
 .img-comp-container {
   position: relative;
-  height: 200px; /*should be the same height as the images*/
+  height: 500px; /*should be the same height as the images*/
 }
 
 .img-comp-img {
