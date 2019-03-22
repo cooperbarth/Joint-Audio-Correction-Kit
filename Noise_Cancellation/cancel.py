@@ -53,9 +53,8 @@ while True:
     cancel_sound = np.real(np.fft.ifft(freq_generated))
 
     # output sound
-    write_data = np.array(np.round(cancel_sound * MAX_INT), dtype=DTYPE)
+    write_data = np.array(np.round(cancel_sound * MAX_INT), dtype=DTYPE) * (10 ** -10)
     stream.write(write_data.tostring(), CHUNK)
-
 
 stream.stop_stream()
 stream.close()

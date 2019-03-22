@@ -6,7 +6,6 @@ from scipy import fftpack as fp
 WINDOW_LENGTH = 2048
 HOP_SIZE = 1024
 
-
 def snr(reduced_signal, original_signal):
     stft_original = librosa.stft(original_signal, win_length=WINDOW_LENGTH, hop_length=HOP_SIZE)
     stft_reduced = librosa.stft(reduced_signal, win_length=WINDOW_LENGTH, hop_length=HOP_SIZE)
@@ -20,5 +19,4 @@ def snr(reduced_signal, original_signal):
         seg_snr += numerator / denominator
 
     seg_snr = (1 / stft_original.shape[1]) * seg_snr
-    print("Average Segment SNR: " + str(seg_snr))
-    return
+    return str(seg_snr)

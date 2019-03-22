@@ -40,10 +40,12 @@ def wiener_filtering(clean_signal, filename, audio_sr):
     signal_est = HRNR(stft_noisy, TSNR_sig, TSNR_gains, noise_est)
     signal_est = highpass(signal_est, audio_sr)
 
-    if '+' not in filename:
-        snr(signal_est, clean_signal)
     new_path = "audio/test_audio_results/" + write_name + "_reduced.wav"
     wavwrite(new_path, signal_est, audio_sr)
+
+    if '+' not in filename:
+        print("Noisy Segmented SNR: " + snr(noisy_signal, clean_signal))
+        print("Denoisned Segmented SNR: " + snr(signal_est, noisy_signal))
 
 if __name__ == '__main__':
     if len(sys.argv) > 1:
