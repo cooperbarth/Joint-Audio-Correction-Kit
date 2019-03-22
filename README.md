@@ -13,7 +13,7 @@ A modern solution for audio noise reduction and active noise cancellation. Creat
   Removing noise without the original source files presents numerous obstacles. Firstly, preserving the original signal quality so speech is easily understandable is one such challenge. Additionally, properly identifying the background noise is key as an improper classification could lead to the source signal being removed or not a sufficiently level of noise reduced. Because of this, implementing an algorithm that works for most examples of the selected noise type is a difficult undertaking as there are many different types of noise. Using an algorithm designed for a different type of noise than the one present in the input source file could lead to sporadic results. Finally, after completing noise reduction, noise artifacts may still be left over in the output track.
 
 ## Approach
-  To filter the noisy audio, we choose to use an adaptive Wiener filtering method to reduce the noise in our source audio tracks. The filter utilizes a two-step noise removal and signal repair method, as outlined in the following figure:
+  To filter the noisy audio, we choose to use an adaptive Wiener filtering method to reduce the noise in our source audio tracks. The filter utilizes a two-step noise removal and signal repair method, as outlined in the following figure: <br>
 ![approach](https://github.com/cooperbarth/Joint-Audio-Correction-Kit/raw/master/Resources/Approach.png "Approach")
 
 ## Testing
