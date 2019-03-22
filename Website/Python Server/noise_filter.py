@@ -12,7 +12,7 @@ from highpass import highpass
 MAX_SIGNAL_LENGTH = 400000
 
 
-def this_is_going_to_totally_work_right(signal, sample_rate):
+def noise_filter(signal, sample_rate):
     if len(signal) > MAX_SIGNAL_LENGTH:
         signal = signal[:MAX_SIGNAL_LENGTH]
 
