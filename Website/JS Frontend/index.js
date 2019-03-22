@@ -59,7 +59,15 @@ function fetchData(results) {
     document.getElementById("after-image").src = URL.createObjectURL(blob)
   }).catch(error => alert(error));
 
-  fetch('http://127.0.0.1:5000/api/data/' + denoised_audio_path, {
+  let audio_file_url = 'http://127.0.0.1:5000/api/data/' + denoised_audio_path
+  document.getElementById("download-button").onclick = function() {
+    var link = document.createElement("a");
+    link.download = "denoised";
+    link.href = audio_file_url;
+    link.click();
+  }
+
+  fetch(audio_file_url, {
     method: 'GET'
   }).then(function(resp) {
     return resp.blob();
