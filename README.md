@@ -1,5 +1,6 @@
 # Joint Audio Correction Kit (J.A.C.K.)
-A modern solution for audio noise reduction and active noise cancellation.
+A modern solution for audio noise reduction and active noise cancellation. Created by Cooper Barth (coop10101@gmail.com), Andrew Finke, and Jack Wiig for EECS 352 - Machine Perception of Music and Audio @ Northwestern University with Professor Pardo.
+
 
 ![marketing image](https://github.com/cooperbarth/Joint-Audio-Correction-Kit/raw/master/Images/MacBookPro.png "Marketing Image")
 
@@ -44,7 +45,6 @@ A modern solution for audio noise reduction and active noise cancellation.
 6. cd into `/Website/JS Frontend/`
 7. open `index.html`
 
-Created by Cooper Barth, Andrew Finke, and Jack Wiig for EECS 352 - Machine Perception of Music and Audio @ Northwestern University
 
 
 https://cooperbarth.github.io/Joint-Audio-Correction-Kit/
