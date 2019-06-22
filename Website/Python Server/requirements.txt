@@ -17,7 +17,7 @@ gmp=6.1.2=h0a44026_1000
 gnutls=3.6.5=h53004b3_1001
 intel-openmp=2019.1=144
 itsdangerous=1.1.0=py37_0
-jinja2=2.10=py37_0
+jinja2=2.10.1=py37_0
 joblib=0.13.2=py_0
 kiwisolver=1.0.1=py37h04f5b5a_1002
 lame=3.100=h1de35cc_1001
