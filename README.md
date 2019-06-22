@@ -48,6 +48,7 @@ Flute|15|1.386|16.236
 6. cd into `/Website/JS Frontend/`
 7. open `index.html`
 
-
+Want to integrate the filter into your own program?:
+`python3 -m pip install jack-audio`
 
 https://cooperbarth.github.io/Joint-Audio-Correction-Kit/
