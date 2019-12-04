@@ -1,5 +1,5 @@
 # Joint Audio Correction Kit (J.A.C.K.)
-An effective solution for stationary audio noise reduction. Created by Cooper Barth (cooperbarth2021@u.northwestern.edu), Andrew Finke, and Jack Wiig for EECS 352 - Machine Perception of Music and Audio @ Northwestern University with Professor Pardo.
+An effective solution for stationary audio noise reduction. Created by Cooper Barth (cooperbarth2021@u.northwestern.edu), Andrew Finke, and Jack Wiig for EECS 352 - Machine Perception of Music and Audio @ Northwestern University with Professor Bryan Pardo.
 
 ![marketing image](https://github.com/cooperbarth/Joint-Audio-Correction-Kit/raw/master/Resources/MacBookPro.png)
 
